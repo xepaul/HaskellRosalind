@@ -1,0 +1,10 @@
+cradle:
+  cabal:
+    - path: "src/"
+      component: "Rosalind:lib:Rosalind-lib"
+
+    - path: "test/"
+      component: "Rosalind:test:Rosalind-test"
+
+    - path: "app/CommandExecuter.hs"
+      component: "Rosalind:exe:RosalindCommandExecuter"

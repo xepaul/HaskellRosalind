@@ -1,0 +1,125 @@
+cabal-version:      2.4
+name:               Rosalind
+version:            0.1.0.0
+synopsis:
+
+extra-source-files:
+    README.md
+
+library Rosalind-lib
+    exposed-modules:  
+                      Rosalind.Problems.Rna
+                      Rosalind.Problems.Hamm
+                      Rosalind.Problems.Revc
+                      Rosalind.RosalindStrings
+
+    build-depends:    base ^>=4.14.1.0
+                      , containers
+                      , extra
+                      , lens
+                      , mtl
+                      , text
+                      , protolude
+                      , transformers
+                      , aeson
+                      , lens-aeson
+                      , raw-strings-qq
+                      , generic-lens
+                      , generic-lens-core                                                               
+                      , bytestring
+                      , directory
+                      , random
+                      , wai
+                      , hspec
+                      , QuickCheck
+                      , parsec
+                      , parsec-numbers
+                      , conduit
+                      , streaming
+                      , text-show
+                      , exceptions
+                      , req
+                      , either
+                      , split                      
+                      , ilist                  
+                      , regex-posix
+                      , array
+                      , async
+                      , errors
+                      , parsec-numbers
+                      , parsec-numeric     
+                      , megaparsec   
+                      , vector                                    
+    hs-source-dirs:   src/
+    default-language: Haskell2010
+    ghc-options: 
+              -Wall 
+              -fno-warn-incomplete-uni-patterns
+              -Wincomplete-patterns             
+              -Wincomplete-uni-patterns 
+              -Wincomplete-record-updates 
+              -Wmissing-fields   
+
+test-suite Rosalind-test
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test/
+    main-is:          AutoTests.hs
+    ghc-options:  -main-is AutoTests
+    other-modules: 
+   
+        Spec.Rosalind.Problems.RevcSpec  
+        Spec.Rosalind.Problems.RevcHedgehogSpec  
+        Spec.Rosalind.Problems.HammSpec  
+        Spec.Rosalind.Problems.HammHedgehogSpec 
+        Spec.Rosalind.Problems.RnaHedgehogSpec
+    build-depends:     
+        base ^>=4.14.1.0
+      , Rosalind-lib
+      , tasty                  
+      , tasty-expected-failure
+      , hedgehog               
+      , tasty-hedgehog    
+      , tasty-quickcheck   
+      , hspec
+      , containers
+      , tasty-hunit
+      , smallcheck       
+      , lens
+      , lens-aeson
+      , containers
+      , extra
+      , parsec
+      , split
+      , QuickCheck
+      , aeson
+      , tasty-th
+      , HUnit
+      , text
+      , unordered-containers
+      , megaparsec
+    ghc-options:         -Wall  
+              -fno-warn-incomplete-uni-patterns
+              -Wincomplete-patterns             
+              -Wincomplete-uni-patterns 
+              -Wincomplete-record-updates 
+              -Wmissing-fields    
+
+
+executable RosalindCommandExecuter
+  main-is: CommandExecuter.hs
+  ghc-options:  -main-is CommandExecuter
+  other-modules:
+  hs-source-dirs: app/
+
+  ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
+  build-depends:
+    base 
+    , Rosalind-lib
+    , extra
+    , optparse-applicative
+    , text
+    , timeit
+    , directory
+    , filepath
+  default-language: Haskell2010
