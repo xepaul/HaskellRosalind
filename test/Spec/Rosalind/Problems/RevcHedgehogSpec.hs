@@ -4,16 +4,21 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 module Spec.Rosalind.Problems.RevcHedgehogSpec (test_tests) where
 
-import Test.Tasty
-import Test.Tasty.Hedgehog qualified as H
+import Data.List.Extra
+
 import Hedgehog
 import Hedgehog.Gen qualified as Gen
 import Hedgehog.Range qualified as Range
+import Test.Tasty
+import Test.Tasty.Hedgehog qualified as H
+
+
 import Rosalind.Problems.Revc qualified as Revc
-import Rosalind.RosalindStrings
-import Data.Either.Extra
+import Rosalind.DnaBase hiding (DnaBase (..))
+import Rosalind.DnaBase qualified as Db
 test_tests :: TestTree
 test_tests = testGroup "Tests Rosalind" [unitTests]
 
@@ -21,28 +26,36 @@ unitTests :: TestTree
 unitTests =
     testGroup
     "Unit tests Rosalind Revc"
-    [   
+    [
         H.testProperty "check sample result" prop0
         , H.testProperty "check revc applied twice is the same as original " prop1
-        , H.testProperty "check revc applied twice is the same as original' " prop2
+        , H.testProperty "check revc by checking every conversion " prop2
     ]
 
 prop0 :: Property
-prop0 =  property $ Revc.revc "AAAACCCGGT" ===  "ACCGGGTTTT"
+prop0 =  property $ Revc.revc  [dnaString|AAAACCCGGT|] ===[dnaString|ACCGGGTTTT|]
 
-genDna' :: Gen String
-genDna' = Gen.string (Range.linear 1 100) (Gen.element ['A', 'C', 'G', 'T'])
+genDna :: Gen [Db.DnaBase]
+genDna = Gen.list (Range.linear 1 100) (Gen.element enumerate)
 
 prop1 :: Property
 prop1 = property $ do
-        dna <- forAll genDna'
+        dna <- forAll genDna
         (Revc.revc .Revc.revc ) dna === dna
-
-genDna :: Gen [RChar 'Dna]
-genDna = Gen.mapMaybe eitherToMaybe $ 
-            parseDnaLettersStringLine <$> genDna'
 
 prop2 :: Property
 prop2 = property $ do
-        dna <- forAll genDna
-        (Revc.revc' .Revc.revc' ) dna === dna
+  dna <- forAll genDna
+  let dna' = Revc.revc dna
+  let checks =
+        and $
+          zipWith
+            ( \d r -> case d of
+                Db.A -> r == Db.T
+                Db.C -> r == Db.G
+                Db.G -> r == Db.C
+                Db.T -> r == Db.A
+            )
+            dna
+            (reverse dna')
+  Hedgehog.assert checks

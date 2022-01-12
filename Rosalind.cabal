@@ -11,7 +11,10 @@ library Rosalind-lib
                       Rosalind.Problems.Rna
                       Rosalind.Problems.Hamm
                       Rosalind.Problems.Revc
+                      Rosalind.Problems.Tran
                       Rosalind.RosalindStrings
+                      Rosalind.DnaBase
+                      Rosalind.RnaBase
 
     build-depends:    base ^>=4.14.1.0
                       , containers
@@ -49,7 +52,8 @@ library Rosalind-lib
                       , parsec-numbers
                       , parsec-numeric     
                       , megaparsec   
-                      , vector                                    
+                      , vector        
+                      , template-haskell                            
     hs-source-dirs:   src/
     default-language: Haskell2010
     ghc-options: 
@@ -73,6 +77,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.HammSpec  
         Spec.Rosalind.Problems.HammHedgehogSpec 
         Spec.Rosalind.Problems.RnaHedgehogSpec
+        Spec.Rosalind.Problems.TranHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib
@@ -97,7 +102,7 @@ test-suite Rosalind-test
       , HUnit
       , text
       , unordered-containers
-      , megaparsec
+      , megaparsec      
     ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
               -Wincomplete-patterns             
@@ -107,8 +112,8 @@ test-suite Rosalind-test
 
 
 executable RosalindCommandExecuter
-  main-is: CommandExecuter.hs
-  ghc-options:  -main-is CommandExecuter
+  main-is: RosalindProblemRunner.hs
+  ghc-options:  -main-is RosalindProblemRunner
   other-modules:
   hs-source-dirs: app/
 
@@ -123,3 +128,9 @@ executable RosalindCommandExecuter
     , directory
     , filepath
   default-language: Haskell2010
+  ghc-options:         -Wall  
+              -fno-warn-incomplete-uni-patterns
+              -Wincomplete-patterns             
+              -Wincomplete-uni-patterns 
+              -Wincomplete-record-updates 
+              -Wmissing-fields    

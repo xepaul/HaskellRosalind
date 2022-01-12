@@ -1,7 +1,7 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module CommandExecuter where
+module RosalindProblemRunner where
 
 import Data.Char (isLetter)
 import Data.Either.Extra
@@ -71,7 +71,7 @@ run = executeCommand . go
     go (Options c@Rna e) = (c, e, return . ProbRna.rna)
     go (Options c@Revc2 e) = (c, e, return . fromEither . mapRight show . ProbRevc.prob)
     executeCommand (c, dataSetOption, f) = do
-      baseDir <- getCurrentDirectory <&>  (</>"Data")
+      baseDir <- getCurrentDirectory <&>  (</> "Data")
       let s = filter isLetter $ getCommandName c
           e' = case dataSetOption of
             ExampleDataset -> "_example"

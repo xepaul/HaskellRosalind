@@ -10,7 +10,6 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeApplications #-}
 
-
 module Rosalind.RosalindStrings
   ( RChar,
     RUnits (..),
@@ -33,6 +32,7 @@ import Text.ParserCombinators.Parsec
     many1,
     sepEndBy1,
   )
+
 
 data RUnits = Dna | Rna
 
@@ -66,6 +66,7 @@ dnaToRna c = case c of
   RChar 'T' -> RChar 'U'
   RChar a -> RChar a
 
+
 complementDna :: RChar 'Dna -> RChar 'Dna
 complementDna c = case c of
                     RChar 'A' -> RChar 'T'
@@ -73,3 +74,4 @@ complementDna c = case c of
                     RChar 'C' -> RChar 'G'
                     RChar 'G' -> RChar 'C'
                     a -> a
+
