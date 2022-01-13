@@ -35,9 +35,9 @@ trans s1 s2 =
    in getSum (s ^. transitions) / getSum (s ^. transversions)
   where
     countTransversion :: [DnaBase] -> [DnaBase] -> Stats
-    countTransversion d1 d2 = execState (getStats d1 d2) mempty
-    getStats :: (MonadState Stats m) => [DnaBase] -> [DnaBase] -> m ()
-    getStats d1 d2 =
+    countTransversion d1 d2 = execState (getStats $ zip d1 d2) mempty
+    getStats :: (MonadState Stats m) => [(DnaBase, DnaBase)] -> m ()
+    getStats =
       mapM_ \case
         (A, A) -> noChange
         (C, C) -> noChange
@@ -54,8 +54,7 @@ trans s1 s2 =
         (C, A) -> incTransversions
         (C, G) -> incTransversions
         (T, A) -> incTransversions
-        (T, G) -> incTransversions
-        $ zip d1 d2
+        (T, G) -> incTransversions        
       where
         incTransitions = transitions += 1
         incTransversions = transversions += 1
