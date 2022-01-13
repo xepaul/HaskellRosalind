@@ -36,7 +36,7 @@ import Data.List.Extra
 test_tests :: TestTree
 test_tests =
   testGroup
-    "Unit tests Rosalind Rna Hedgehog"
+    "Unit tests Rosalind Motif Hedgehog"
     [ H.testProperty "test Motif tripping" proproundTripMotifMultiple
     ]
 
