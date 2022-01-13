@@ -61,3 +61,12 @@ showRosalindFasta RosalindFasta{fDescripton=fastaId,fData=dna } =
    let dnaLines = chunksOf 60 dna
    in
    ">" <> printf fastaId <> "\n" <> printf  (filter (/= '"') $ unlines (map show dnaLines))
+
+parseTwoDnaBaseFastas :: Text -> Either String (RosalindFasta [DnaBase], RosalindFasta [DnaBase])
+parseTwoDnaBaseFastas = mapLeft show <$> runParser (twoFastasParser dnabaseStringLineParser) ""
+    where
+    twoFastasParser :: ParserB [a] -> ParserB (RosalindFasta [a], RosalindFasta [a])
+    twoFastasParser p = do
+                f1 <- fastaParser p
+                f2 <- fastaParser p
+                return (f1,f2)

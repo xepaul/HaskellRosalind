@@ -16,8 +16,11 @@ import Data.Monoid.Generic
     GenericSemigroup (..),
   )
 import Data.Semigroup (Sum (..))
+import Data.Text qualified as T
 import GHC.Generics (Generic)
 import Rosalind.DnaBase (DnaBase (..))
+import Rosalind.Fasta
+import Text.Printf
 
 data Stats = Stats
   { _transitions :: Sum Double,
@@ -28,6 +31,11 @@ data Stats = Stats
   deriving (Semigroup) via GenericSemigroup Stats
 
 makeLenses ''Stats
+
+prob :: String -> Either String String
+prob s =  do
+         (RosalindFasta _ a,RosalindFasta _ b) <- parseTwoDnaBaseFastas $  T.pack s         
+         return $ printf "%f" $ trans a b
 
 trans :: [DnaBase] -> [DnaBase] -> Double
 trans s1 s2 =
@@ -54,7 +62,7 @@ trans s1 s2 =
         (C, A) -> incTransversions
         (C, G) -> incTransversions
         (T, A) -> incTransversions
-        (T, G) -> incTransversions        
+        (T, G) -> incTransversions
       where
         incTransitions = transitions += 1
         incTransversions = transversions += 1

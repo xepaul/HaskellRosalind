@@ -24,11 +24,14 @@ import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog qualified as H
 
+import Spec.Rosalind.Common
 test_tests :: TestTree
 test_tests =
   testGroup
     "Unit tests Rosalind Rna Hedgehog"
     [ H.testProperty "check sample result" prop0
+    ,testCase "tran file expected " $ do
+            testExampleDatasetMatchesExpected "tran"   Tran.prob
     
     ]
 
