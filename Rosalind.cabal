@@ -17,6 +17,7 @@ library Rosalind-lib
                       Rosalind.DnaBase
                       Rosalind.RnaBase
                       Rosalind.Fasta
+                      Rosalind.GeneticStringConversion
 
     build-depends:    base ^>=4.14.1.0
                       , containers
