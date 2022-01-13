@@ -12,9 +12,11 @@ library Rosalind-lib
                       Rosalind.Problems.Hamm
                       Rosalind.Problems.Revc
                       Rosalind.Problems.Tran
+                      Rosalind.Problems.Gc
                       Rosalind.RosalindStrings
                       Rosalind.DnaBase
                       Rosalind.RnaBase
+                      Rosalind.Fasta
 
     build-depends:    base ^>=4.14.1.0
                       , containers
@@ -78,6 +80,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.HammHedgehogSpec 
         Spec.Rosalind.Problems.RnaHedgehogSpec
         Spec.Rosalind.Problems.TranHedgehogSpec
+        Spec.Rosalind.Problems.GcHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib
