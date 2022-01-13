@@ -33,6 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         ghcup upgrade
+        ghcup install ghc 8.10.7
         ghcup set ghc 8.10.7
         cabal update
         cabal build --only-dependencies --enable-tests --enable-benchmarks
