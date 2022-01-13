@@ -15,6 +15,7 @@ library Rosalind-lib
                       Rosalind.Problems.Gc
                       Rosalind.Problems.Prot
                       Rosalind.Problems.Orf
+                      Rosalind.Problems.Subs 
                       Rosalind.RosalindStrings
                       Rosalind.DnaBase
                       Rosalind.RnaBase
@@ -89,6 +90,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.GcHedgehogSpec
         Spec.Rosalind.Problems.ProtHedgehogSpec
         Spec.Rosalind.Problems.OrfHedgehogSpec
+        Spec.Rosalind.Problems.SubsHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib
