@@ -79,6 +79,8 @@ test-suite Rosalind-test
     hs-source-dirs:   test/
     main-is:          AutoTests.hs
     ghc-options:  -main-is AutoTests
+    build-tool-depends:
+      tasty-discover:tasty-discover
     other-modules: 
         Spec.Rosalind.Common
         Spec.Rosalind.Problems.RevcSpec  
@@ -91,6 +93,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.ProtHedgehogSpec
         Spec.Rosalind.Problems.OrfHedgehogSpec
         Spec.Rosalind.Problems.SubsHedgehogSpec
+        Spec.Rosalind.Problems.FastaHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib
@@ -131,8 +134,7 @@ executable RosalindCommandExecuter
   main-is: RosalindProblemRunner.hs
   ghc-options:  -main-is RosalindProblemRunner
   other-modules:
-  hs-source-dirs: app/
-
+  hs-source-dirs: app/  
   ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
   build-depends:
     base 
