@@ -6,5 +6,5 @@ cradle:
     - path: "test/"
       component: "Rosalind:test:Rosalind-test"
 
-    - path: "app/CommandExecuter.hs"
+    - path: "app/RosalindProblemRunner.hs"
       component: "Rosalind:exe:RosalindCommandExecuter"

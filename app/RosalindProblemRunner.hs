@@ -68,7 +68,7 @@ run = executeCommand . go
   where
     go (Options c@Hamm e) = (c, e, return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput)
     go (Options c@Revc e) = (c, e, return . ProbRevc.revc)
-    go (Options c@Rna e) = (c, e, return . ProbRna.rna)
+    go (Options c@Rna e) = (c, e, return . fromEither . ProbRna.prob)
     go (Options c@Revc2 e) = (c, e, return . fromEither . mapRight show . ProbRevc.prob)
     executeCommand (c, dataSetOption, f) = do
       baseDir <- getCurrentDirectory <&>  (</> "Data")
