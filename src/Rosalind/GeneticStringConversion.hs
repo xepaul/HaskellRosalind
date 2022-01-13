@@ -13,21 +13,21 @@ import Rosalind.RnaBase (RnaBase())
 import Rosalind.RosalindStrings qualified as RS
 import Rosalind.RosalindStrings hiding (dnaToRna)
 
-class DnaToRna a b | a -> b where
+class Dna2Rna a b | a -> b where
     dna2Rna :: a -> b
 
 class Eq a => DnaComplementer a where
      complement :: a -> a
 
-instance DnaToRna DnaBase RnaBase where
+instance Dna2Rna DnaBase RnaBase where
     dna2Rna a = case a of
                 D.A -> R.A
                 D.C -> R.C
                 D.G -> R.G
                 D.T -> R.U
 
-instance DnaToRna (RChar 'Dna)  (RChar 'Rna) where  dna2Rna = RS.dnaToRna
-instance DnaToRna Char  Char where
+instance Dna2Rna (RChar 'Dna)  (RChar 'Rna) where  dna2Rna = RS.dnaToRna
+instance Dna2Rna Char  Char where
     dna2Rna = \case
                 'A' -> 'A'
                 'C' -> 'C'
