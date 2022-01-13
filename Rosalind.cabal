@@ -23,6 +23,7 @@ library Rosalind-lib
                       Rosalind.GeneticStringConversion
                       Rosalind.ProteinWithStop
                       Rosalind.Codon2ProteinConv
+                      Rosalind.Motif
 
     build-depends:    base ^>=4.14.1.0
                       , containers
@@ -92,7 +93,8 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.ProtHedgehogSpec
         Spec.Rosalind.Problems.OrfHedgehogSpec
         Spec.Rosalind.Problems.SubsHedgehogSpec
-        Spec.Rosalind.Problems.FastaHedgehogSpec
+        Spec.Rosalind.FastaHedgehogSpec
+        Spec.Rosalind.MotifHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib

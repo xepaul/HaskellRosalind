@@ -7,7 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Spec.Rosalind.Problems.FastaHedgehogSpec where
+module Spec.Rosalind.FastaHedgehogSpec where
 
 import Data.Text qualified as T
 import Hedgehog
