@@ -56,7 +56,8 @@ library Rosalind-lib
                       , parsec-numeric     
                       , megaparsec   
                       , vector        
-                      , template-haskell                            
+                      , template-haskell
+                      , generic-monoid                           
     hs-source-dirs:   src/
     default-language: Haskell2010
     ghc-options: 
