@@ -13,11 +13,14 @@ library Rosalind-lib
                       Rosalind.Problems.Revc
                       Rosalind.Problems.Tran
                       Rosalind.Problems.Gc
+                      Rosalind.Problems.Prot
                       Rosalind.RosalindStrings
                       Rosalind.DnaBase
                       Rosalind.RnaBase
                       Rosalind.Fasta
                       Rosalind.GeneticStringConversion
+                      Rosalind.ProteinWithStop
+                      Rosalind.Codon2ProteinConv
 
     build-depends:    base ^>=4.14.1.0
                       , containers
@@ -83,6 +86,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.RnaHedgehogSpec
         Spec.Rosalind.Problems.TranHedgehogSpec
         Spec.Rosalind.Problems.GcHedgehogSpec
+        Spec.Rosalind.Problems.ProtHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib

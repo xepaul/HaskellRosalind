@@ -11,6 +11,7 @@ import Options.Applicative
 import Rosalind.Problems.Hamm qualified as ProbHamm
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
+import Rosalind.Problems.Prot qualified as ProbProt
 import System.TimeIt
 import System.Directory
 import Data.Functor
@@ -20,6 +21,7 @@ data Commands
   | Rna
   | Revc
   | Revc2
+  | Prot
   deriving (Eq, Show, Bounded, Enum)
 
 getCommandName :: Commands -> String
@@ -70,6 +72,7 @@ run = executeCommand . go
     go (Options c@Revc e) = (c, e, return . ProbRevc.revc)
     go (Options c@Rna e) = (c, e, return . fromEither . ProbRna.prob)
     go (Options c@Revc2 e) = (c, e, return . fromEither . mapRight show . ProbRevc.prob)
+    go (Options c@Prot e) = (c, e, return . fromEither  . ProbProt.prob)
     executeCommand (c, dataSetOption, f) = do
       baseDir <- getCurrentDirectory <&>  (</> "Data")
       let s = filter isLetter $ getCommandName c
