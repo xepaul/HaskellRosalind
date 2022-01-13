@@ -81,6 +81,7 @@ test-suite Rosalind-test
     ghc-options:  -main-is AutoTests
     build-tool-depends:
       tasty-discover:tasty-discover
+      , tasty-auto:tasty-auto
     other-modules: 
         Spec.Rosalind.Common
         Spec.Rosalind.Problems.RevcSpec  
