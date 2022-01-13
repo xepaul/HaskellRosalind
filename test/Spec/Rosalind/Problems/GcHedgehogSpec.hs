@@ -22,16 +22,18 @@ import Rosalind.RosalindStrings
 import Test.Hspec (shouldBe)
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.Tasty.Hedgehog qualified as H
+import Test.Tasty.Hedgehog
 import Rosalind.DnaBase (DnaBase)
 import Rosalind.Fasta
-
+import Spec.Rosalind.Common
 test_tests :: TestTree
 test_tests =
   testGroup
     "Unit tests Rosalind Rna Hedgehog"
-    [ H.testProperty "check sample result" prop0
-    
+    [ testProperty "check sample result" prop0
+     ,testCase "gc file " $ do
+            content <- readDataset "gc"
+            Gc.prob  content `shouldBe`  Right ("0808",60.91954022988505::Double)    
     ]
 
 prop0 :: Property

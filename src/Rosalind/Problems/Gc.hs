@@ -8,6 +8,11 @@ import Data.List ( maximumBy)
 import Rosalind.Fasta
 import Rosalind.DnaBase
 
+prob :: String -> Either String (String, Double)
+prob content = do
+  fs <- parseManyDnaBaseFastas $ T.pack  content
+  return $ calcDnaBaseGcContent fs
+
 calcDnaBaseGcContent :: [RosalindFasta [DnaBase ]] -> (String,Double)
 calcDnaBaseGcContent = calcGcContent p
     where
