@@ -28,17 +28,25 @@ import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog qualified as H
 import Text.Printf
-import Rosalind.Motif (Motif (..), parseProteinMotif, showMotif)
-import Rosalind.ProteinWithStop (ProteinWithStop, proteins2String)
+import Rosalind.Motif (Motif (..), parseMotif, showMotif)
+import Rosalind.ProteinWithStop (ProteinWithStop(..), proteins2String,proteinWithStopMotifString)
 import Data.Set qualified as Set
 import Data.Set (Set)
 import Data.List.Extra
+import Data.Data (Proxy(Proxy))
 test_tests :: TestTree
 test_tests =
   testGroup
     "Unit tests Rosalind Motif Hedgehog"
-    [ H.testProperty "test Motif tripping" proproundTripMotifMultiple
+    [ H.testProperty "test Motif tripping" proproundTripMotifMultiple,
+      testCase "test quasiquote " $ example1MotifQuassi `shouldBe`  expectedMotifForExample1   
+
     ]
+
+example1MotifQuassi = [proteinWithStopMotifString|N{P}[ST]{P*}|]
+expectedMotifForExample1 = [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]]
+
+
 
 genMotif :: Gen (Motif ProteinWithStop)
 genMotif =
@@ -57,4 +65,4 @@ proproundTripMotifMultiple :: Property
 proproundTripMotifMultiple =
   Hedgehog.property $ do
     na <- Hedgehog.forAll $ Gen.list (Range.constant 1 100) genMotif
-    Hedgehog.tripping na showMotif parseProteinMotif
+    Hedgehog.tripping na showMotif (parseMotif (Proxy @ProteinWithStop))

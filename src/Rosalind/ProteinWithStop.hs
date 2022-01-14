@@ -15,6 +15,9 @@ import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax ( Lift )
 import Text.Read (readEither)
 import Data.List.Extra
+import Rosalind.Common (SingleCharForm (singleCharShow,singleCharRead, singleChars),readEitherVerbose)
+import Rosalind.Motif (makeMotifQuassiQuoter)
+import Data.Data (Proxy(Proxy))
 
 data ProteinWithStop = F|L|I|V|S|P|T|A|Y|M|Stop|H|Q|N|K|D|E|C|W|R|G deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
 
@@ -24,7 +27,7 @@ parseProtein = readEither @ProteinWithStop . fixStarToStop
     fixStarToStop :: Char -> [Char]
     fixStarToStop c =  if '*'==c then "Stop" else [c]
 parseProteinString :: (Traversable t) => t Char -> Either String (t ProteinWithStop)
-parseProteinString = traverse (readEither @ProteinWithStop . fixStarToStop)
+parseProteinString = traverse ((readEitherVerbose @ProteinWithStop) . fixStarToStop)
   where
     fixStarToStop :: Char -> [Char]
     fixStarToStop c =  if '*'==c then "Stop" else [c]
@@ -55,3 +58,16 @@ proteinString =
       quoteType = error "quote: Invalid application in type context.",
       quoteDec = error "quote: Invalid application in dec context."
     }
+
+instance SingleCharForm ProteinWithStop where
+   singleCharShow = protein2Char
+   singleCharRead = parseProtein
+   singleChars _ =  enumerate @ProteinWithStop
+
+
+proteinWithStopMotifString = makeMotifQuassiQuoter  (Proxy @ProteinWithStop)
+
+-- >>> parseProteinMotif "N{P}[ST]{P*}"
+-- Right [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]]
+-- >>> [proteinWithStopMotifString|N{P}[ST]{P*}|]
+-- [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]]
