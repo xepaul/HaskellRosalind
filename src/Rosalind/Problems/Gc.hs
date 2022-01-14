@@ -1,5 +1,4 @@
 {-# LANGUAGE ImportQualifiedPost #-}
-{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Rosalind.Problems.Gc where
 import Data.Text qualified as T
@@ -7,6 +6,7 @@ import Data.Function (on)
 import Data.List ( maximumBy)
 import Rosalind.Fasta
 import Rosalind.DnaBase
+import Rosalind.Common (count)
 
 prob :: String -> Either String (String, Double)
 prob content = do
@@ -27,9 +27,3 @@ calcGcContent p = maximumBy (compare `on` snd) . map getFastaGcContent
     countCG = fromIntegral . count p
     getRosalindId :: String -> [Char]
     getRosalindId = T.unpack . T.replace "Rosalind_" "" . T.pack
-
-count :: (a -> Bool) -> [a] -> Int
-count p = go 0
-  where go !n [] = n
-        go !n (x:xs) | p x       = go (n+1) xs
-                     | otherwise = go n xs
