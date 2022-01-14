@@ -2,6 +2,8 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
 
 module Rosalind.RnaBase
   ( parseRnaBases,
@@ -10,13 +12,18 @@ module Rosalind.RnaBase
     rnaBases2String
   )
 where
-
+import Data.Aeson (FromJSON, ToJSON)
+import Data.List.Extra ( enumerate )
+import Data.OpenApi (ToParamSchema,ToSchema)
+import GHC.Generics (Generic)
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote 
 import Language.Haskell.TH.Syntax ( Lift )
 import Text.Read (readEither)
-import Data.List.Extra
-data RnaBase = A | C | G | U deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
+
+data RnaBase = A | C | G | U 
+  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
+            Generic, FromJSON,ToJSON,ToParamSchema,ToSchema)
 
 parseRnaBases :: [Char] -> Either String [RnaBase]
 parseRnaBases = traverse (readEither . (: []))

@@ -8,3 +8,12 @@ cradle:
 
     - path: "app/RosalindProblemRunner.hs"
       component: "Rosalind:exe:RosalindCommandExecuter"
+
+    - path: "server/src/Main.hs"
+      component: "Rosalind:exe:server"
+
+    - path: "server/src/Api.hs"
+      component: "Rosalind:exe:server"
+
+    - path: "server/src/Dto.hs"
+      component: "Rosalind:exe:server"

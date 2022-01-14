@@ -3,6 +3,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Rosalind.DnaBase
   ( parseDnaBases,
@@ -11,17 +14,26 @@ module Rosalind.DnaBase
     dnaBases2String
   )
 where
-
+import Data.Aeson ( FromJSON, ToJSON )
+import Data.Either.Combinators (mapLeft)
+import Data.List.Extra ( enumerate )
+import Data.Text qualified as T
+import Data.OpenApi (ToParamSchema,ToSchema) 
+import GHC.Generics (Generic)
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax ( Lift )
-import Text.Read (readEither)
-import Data.List.Extra
 
-data DnaBase = A | C | G | T deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
+import Servant.API (FromHttpApiData (parseUrlPiece))
+
+import Rosalind.Common (readEitherVerbose)
+
+data DnaBase = A | C | G | T 
+  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
+            Generic, FromJSON,ToJSON,ToParamSchema,ToSchema)
 
 parseDnaBases :: (Traversable t) => t Char -> Either String (t DnaBase)
-parseDnaBases = traverse (readEither . (: []))
+parseDnaBases = traverse (readEitherVerbose . (: []))
 
 dnaBases2String :: [DnaBase] -> String
 dnaBases2String = concatMap show
@@ -40,3 +52,6 @@ dnaString =
       quoteType = error "quote: Invalid application in type context.",
       quoteDec = error "quote: Invalid application in dec context."
     }
+
+instance FromHttpApiData [DnaBase] where
+  parseUrlPiece  = mapLeft T.pack . parseDnaBases . T.unpack

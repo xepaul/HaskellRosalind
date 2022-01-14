@@ -64,7 +64,10 @@ library Rosalind-lib
                       , megaparsec   
                       , vector        
                       , template-haskell
-                      , generic-monoid                           
+                      , generic-monoid    
+                      , servant-openapi3
+                      , openapi3    
+                      , servant                   
     hs-source-dirs:   src/
     default-language: Haskell2010
     ghc-options: 
@@ -147,6 +150,34 @@ executable RosalindCommandExecuter
     , timeit
     , directory
     , filepath
+  default-language: Haskell2010
+  ghc-options:         -Wall  
+              -fno-warn-incomplete-uni-patterns
+              -Wincomplete-patterns             
+              -Wincomplete-uni-patterns 
+              -Wincomplete-record-updates 
+              -Wmissing-fields    
+
+executable server
+  main-is: Main.hs
+  other-modules:
+      Api
+      
+  hs-source-dirs:
+      server/src
+  build-depends:
+      aeson
+    , base
+    , containers
+    , servant
+    , servant-server
+    , Rosalind-lib
+    , text
+    , wai
+    , warp
+    , extra
+    , servant-openapi3
+    , openapi3
   default-language: Haskell2010
   ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
