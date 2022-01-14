@@ -11,20 +11,10 @@ module Spec.Rosalind.FastaHedgehogSpec where
 
 import Data.Text qualified as T
 import Hedgehog
-import Hedgehog qualified as Gen
 import Hedgehog.Gen qualified as Gen
 import Hedgehog.Range qualified as Range
-import Rosalind.DnaBase (DnaBase)
-import Rosalind.DnaBase hiding (DnaBase (..))
-import Rosalind.DnaBase qualified as Db (DnaBase (..))
 import Rosalind.Fasta
-import Rosalind.Problems.Gc qualified as Gc
-import Rosalind.RnaBase hiding (RnaBase (..))
-import Rosalind.RnaBase qualified as Rb
-import Rosalind.RosalindStrings
-import Test.Hspec (shouldBe)
 import Test.Tasty
-import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog qualified as H
 import Text.Printf
 
@@ -45,4 +35,4 @@ propRoundtripRosalindFasta :: Property
 propRoundtripRosalindFasta =
   Hedgehog.property $ do
     na <- Hedgehog.forAll genRosalindFasta
-    Hedgehog.tripping na showRosalindFasta (parseCharFasta . T.pack)
+    Hedgehog.tripping na showRosalindFasta (parseDnaCharFasta . T.pack)

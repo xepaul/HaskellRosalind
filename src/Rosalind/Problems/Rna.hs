@@ -3,13 +3,14 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 module Rosalind.Problems.Rna where
     
-import Rosalind.RosalindStrings hiding (dnaToRna)
 import Rosalind.DnaBase qualified as DB (DnaBase(..))
-import Rosalind.RnaBase qualified as RB (RnaBase(..))
-import Rosalind.DnaBase hiding (DnaBase(..))
-import Rosalind.RnaBase hiding (RnaBase(..))
 
-import Rosalind.GeneticStringConversion
+import Rosalind.DnaBase ( parseDnaBases )
+
+import Rosalind.GeneticStringConversion ( Dna2Rna(dna2Rna) )
+import Rosalind.RnaBase ( rnaBases2String )
+import Rosalind.RnaBase qualified as RB (RnaBase(..))
+import Rosalind.RosalindStrings hiding (dnaToRna)
 
 dnaStringToRna :: [RChar 'Dna] -> [RChar 'Rna]
 dnaStringToRna = map dna2Rna

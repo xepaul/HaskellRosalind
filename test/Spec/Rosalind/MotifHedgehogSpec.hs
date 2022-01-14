@@ -10,30 +10,18 @@
 
 module Spec.Rosalind.MotifHedgehogSpec where
 
-import Data.Text qualified as T
+import Data.List.Extra ( enumerate )
+import Data.Data (Proxy(Proxy))
 import Hedgehog
-import Hedgehog qualified as Gen
 import Hedgehog.Gen qualified as Gen
 import Hedgehog.Range qualified as Range
-import Rosalind.DnaBase (DnaBase)
-import Rosalind.DnaBase hiding (DnaBase (..))
-import Rosalind.DnaBase qualified as Db (DnaBase (..))
-import Rosalind.Fasta
-import Rosalind.Problems.Gc qualified as Gc
-import Rosalind.RnaBase hiding (RnaBase (..))
-import Rosalind.RnaBase qualified as Rb
-import Rosalind.RosalindStrings
 import Test.Hspec (shouldBe)
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog qualified as H
-import Text.Printf
 import Rosalind.Motif (Motif (..), parseMotif, showMotif)
-import Rosalind.ProteinWithStop (ProteinWithStop(..), proteins2String,proteinWithStopMotifString)
-import Data.Set qualified as Set
-import Data.Set (Set)
-import Data.List.Extra
-import Data.Data (Proxy(Proxy))
+import Rosalind.ProteinWithStop (ProteinWithStop(..),proteinWithStopMotifString)
+
 test_tests :: TestTree
 test_tests =
   testGroup
@@ -45,8 +33,6 @@ test_tests =
 
 example1MotifQuassi = [proteinWithStopMotifString|N{P}[ST]{P*}|]
 expectedMotifForExample1 = [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]]
-
-
 
 genMotif :: Gen (Motif ProteinWithStop)
 genMotif =

@@ -1,9 +1,17 @@
 {-# LANGUAGE LambdaCase #-}
-module Rosalind.Problems.Prot where
+module Rosalind.Problems.Prot
+  (
+     convertToProtein
+   , convertRnaBasesToProtein
+   , prob                        
+      )
+where
+
 import Data.List.Split (chunksOf)
-import Rosalind.Codon2ProteinConv
-import Rosalind.RnaBase
+import Rosalind.Codon2ProteinConv ( rdaCodon2ProteinWithStop )
+import Rosalind.RnaBase ( RnaBase, parseRnaBases )
 import Rosalind.ProteinWithStop
+    ( proteins2String, ProteinWithStop(Stop) )
 
 prob :: String -> Either String String
 prob s =  proteins2String <$> convertToProtein s

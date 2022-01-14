@@ -1,16 +1,23 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Rosalind.Fasta where
+module Rosalind.Fasta 
+    (                    
+        parseDnaCharFasta
+        , parseManyDnaBaseFastas
+        , parseTwoDnaBaseFastas
+        , RosalindFasta(..)
+        , showRosalindFasta
+    )
+where
 
-import Text.Printf
+import Data.Either.Combinators ( mapLeft )
+import Data.List.Extra ( chunksOf, enumerate )
+import Data.Text (Text)
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Data.Text (Text)
-import Data.List.Extra
-import Data.Either.Combinators
+import Text.Printf ( printf )
 
-import Rosalind.DnaBase (DnaBase(..))
-import Rosalind.DnaBase hiding (DnaBase(..))
+import Rosalind.DnaBase ( DnaBase(..), parseDnaBases )
 
 data RosalindFasta a = RosalindFasta {
                                       fDescripton :: String
@@ -47,8 +54,8 @@ fastaParser p = do
                 i <- manyTill (choice anyLetter) (try (char '\n'))
                 RosalindFasta i <$> p
 
-parseCharFasta :: Text -> Either String (RosalindFasta [Char])
-parseCharFasta = mapLeft show <$> runParser (fastaParser dnaCharStringLineParser) ""
+parseDnaCharFasta :: Text -> Either String (RosalindFasta [Char])
+parseDnaCharFasta = mapLeft show <$> runParser (fastaParser dnaCharStringLineParser) ""
 
 parseManyDnaBaseFastas :: Text -> Either String [RosalindFasta [DnaBase]]
 parseManyDnaBaseFastas = mapLeft show <$> runParser (twoFastasParser dnabaseStringLineParser) ""

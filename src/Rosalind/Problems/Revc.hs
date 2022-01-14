@@ -6,10 +6,10 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# language LambdaCase #-}
 module Rosalind.Problems.Revc where
-import Rosalind.RosalindStrings
-import Rosalind.DnaBase (DnaBase(..), parseDnaBases,dnaBases2String)
-import Rosalind.GeneticStringConversion
+
 import Data.List qualified as List
+import Rosalind.DnaBase (parseDnaBases,dnaBases2String)
+import Rosalind.GeneticStringConversion ( DnaComplementer(..) )
 
 class DnaStrandComplementer a  where
      complementStrand :: a -> a

@@ -1,12 +1,14 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Rosalind.Problems.Gc where
-import Data.Text qualified as T
+
 import Data.Function (on)
 import Data.List ( maximumBy)
-import Rosalind.Fasta
-import Rosalind.DnaBase
+import Data.Text qualified as T
 import Rosalind.Common (count)
+import Rosalind.DnaBase ( DnaBase(G, C) )
+import Rosalind.Fasta
+    ( RosalindFasta(RosalindFasta), parseManyDnaBaseFastas )
 
 prob :: String -> Either String (String, Double)
 prob content = do

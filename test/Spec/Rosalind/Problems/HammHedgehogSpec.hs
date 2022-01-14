@@ -7,6 +7,8 @@
 {-# LANGUAGE QuasiQuotes #-}
 module Spec.Rosalind.Problems.HammHedgehogSpec (test_tests) where
 
+import Data.List.Extra ( enumerate )
+import Data.Either.Combinators ( mapRight )
 import Data.Set (Set)
 import Hedgehog
 import Hedgehog qualified as Gen
@@ -18,8 +20,7 @@ import Test.Tasty.HUnit
 import Test.Hspec (shouldBe)
 import Test.Tasty.Hedgehog 
 import Rosalind.DnaBase
-import Data.List.Extra
-import Data.Either.Combinators
+
 import Spec.Rosalind.Common
 
 test_tests :: TestTree

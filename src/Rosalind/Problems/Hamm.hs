@@ -1,7 +1,7 @@
 module Rosalind.Problems.Hamm where
 
 import Control.Monad.Except ( MonadError(throwError) )
-import Rosalind.DnaBase
+import Rosalind.DnaBase ( parseDnaBases )
 hamm :: (Eq a) => [a] -> [a] -> Int
 hamm s1 s2 = length $ filter id $ zipWith (/=) s1 s2
 

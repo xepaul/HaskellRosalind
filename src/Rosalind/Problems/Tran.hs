@@ -11,16 +11,17 @@ module Rosalind.Problems.Tran where
 
 import Control.Lens
 import Control.Monad.State (MonadState (), execState)
+import GHC.Generics (Generic)
 import Data.Monoid.Generic
   ( GenericMonoid (..),
     GenericSemigroup (..),
   )
 import Data.Semigroup (Sum (..))
 import Data.Text qualified as T
-import GHC.Generics (Generic)
+import Text.Printf ( printf )
 import Rosalind.DnaBase (DnaBase (..))
 import Rosalind.Fasta
-import Text.Printf
+    ( RosalindFasta(RosalindFasta), parseTwoDnaBaseFastas )
 
 data Stats = Stats
   { _transitions :: Sum Double,

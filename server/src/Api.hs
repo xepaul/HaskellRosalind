@@ -9,30 +9,18 @@
 
 module Api where
 
-import Data.Aeson (FromJSON, ToJSON)
-import Data.Aeson.Parser qualified
-import Data.Aeson.Types
 import Data.Either.Extra
-import Data.List
-import Data.Maybe
-import Data.Proxy
-import Data.Text (Text)
-import Data.Text qualified as T
-import GHC.Generics
-import Rosalind.DnaBase (DnaBase, parseDnaBases)
-import Rosalind.DnaBase  (DnaBase)
+    ( Either(Right, Left), fromEither, mapLeft )
+import Data.OpenApi ( OpenApi )
+
+import Prelude (Monad (return), String, const,(.))
+import Servant
+import Servant.OpenApi ( HasOpenApi(toOpenApi) )
+
+import Rosalind.DnaBase (DnaBase)
 import Rosalind.Problems.Rna qualified as Rna
 import Rosalind.Problems.Revc qualified as Revc
 import Rosalind.RnaBase (RnaBase)
-import Servant
-import Servant.API
-import Servant.Types.SourceT (source)
-import Prelude (Monad (return), String, const, ($),(.))
-import Data.OpenApi hiding (Server)
-import Servant.OpenApi
-import Servant.Server
-
-
 
 type RosalindApi =
          "rna" :> Capture "dna" String :> Get '[JSON] String

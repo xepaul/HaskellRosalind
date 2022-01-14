@@ -1,9 +1,10 @@
 module Spec.Rosalind.Common where
 
-import System.Directory
-import Data.Functor
-import System.FilePath.Posix
+import Data.Functor ( (<&>) )
+import System.Directory ( getCurrentDirectory )
+import System.FilePath.Posix ( (</>) )
 import Test.Hspec (shouldBe)
+
 baseDir :: IO FilePath
 baseDir = getCurrentDirectory <&>  (</> "Data" )
 readDatasetAndExpectedResult :: [Char] -> IO (String, String)

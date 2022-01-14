@@ -1,9 +1,8 @@
 {-# LANGUAGE BangPatterns #-}
 module Rosalind.Common where
 
-import Text.Read
-
-import Data.Either.Combinators
+import Data.Either.Combinators ( mapLeft )
+import Text.Read ( readEither )
 
 class SingleCharForm a  where
     singleCharShow :: a -> Char

@@ -20,10 +20,9 @@ import Data.List.Extra ( enumerate )
 import Data.Text qualified as T
 import Data.OpenApi (ToParamSchema,ToSchema) 
 import GHC.Generics (Generic)
-import Language.Haskell.TH
-import Language.Haskell.TH.Quote
+import Language.Haskell.TH qualified as TH ( Exp, Q )
+import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax ( Lift )
-
 import Servant.API (FromHttpApiData (parseUrlPiece))
 
 import Rosalind.Common (readEitherVerbose)
@@ -38,7 +37,7 @@ parseDnaBases = traverse (readEitherVerbose . (: []))
 dnaBases2String :: [DnaBase] -> String
 dnaBases2String = concatMap show
 
-makeDnaBaseString :: String -> Q Exp
+makeDnaBaseString :: String -> TH.Q TH.Exp
 makeDnaBaseString name = case parseDnaBases name of
   Left _ -> fail $ "Invalid base should be one of " <> concatMap show  (enumerate @DnaBase)
   Right v -> [|v|]

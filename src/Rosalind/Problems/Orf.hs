@@ -12,7 +12,7 @@ import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.List
 import Control.Monad.Except (throwError)
-import Data.Maybe
+import Data.Maybe ( fromMaybe )
 import Data.List.Split (chunksOf)
 import Rosalind.Codon2ProteinConv (rdaCodon2ProteinWithStop)
 import Data.Either (rights)

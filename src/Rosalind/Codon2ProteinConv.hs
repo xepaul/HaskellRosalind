@@ -1,7 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 module Rosalind.Codon2ProteinConv where
 
-
 import Rosalind.RnaBase (RnaBase(..))
 import Rosalind.ProteinWithStop qualified as P (ProteinWithStop(..))
 import Rosalind.ProteinWithStop (ProteinWithStop)
