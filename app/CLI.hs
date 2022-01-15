@@ -6,22 +6,22 @@ module CLI where
 
 import Data.Char (isLetter)
 import Data.Either.Extra
+import Data.Functor
 import Data.List.Extra
 import Data.Text qualified as T
 import Options.Applicative
 import Rosalind.Problems.Hamm qualified as ProbHamm
+import Rosalind.Problems.Prot qualified as ProbProt
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
-import Rosalind.Problems.Prot qualified as ProbProt
 import Rosalind.Problems.Tran qualified as ProbTran
-import System.TimeIt
 import System.Directory
-import Data.Functor
 import System.FilePath.Posix
+import System.TimeIt
 
 data Commands
   = RunServer
-  | RunProblem Options
+  | RunProblem Problem
 
 data ProblemCommands
   = Hamm
@@ -32,55 +32,60 @@ data ProblemCommands
   | Tran
   deriving (Eq, Show, Bounded, Enum)
 
-getCommandName :: ProblemCommands -> String
-getCommandName = T.unpack . T.toLower . T.pack . show
+data Problem = Problem
+  {
+    probCommand :: ProblemCommands,
+    probOptions :: ProblemOptions
+  }
 
-data Options = Options
-  { optCommands :: ProblemCommands,
+data ProblemOptions = ProblemOptions
+  {
     optDataSetOption :: DatasetOption,
-    optOutOption :: String 
+    optOutOption :: String
   }
 
 data DatasetOption = RealDataset | ExampleDataset deriving (Show)
 
-useExampleDataset :: Parser DatasetOption
-useExampleDataset = removeBoolBlindness <$> switch (long "example" <> short 'e' <> showDefault <> help "Choose dataset file <problem name>_example.txt")
-  where
-    removeBoolBlindness :: Bool -> DatasetOption
-    removeBoolBlindness b = if b then ExampleDataset else RealDataset
-
-allCommands :: Parser Commands
-allCommands =
+commandsParser :: Parser Commands
+commandsParser =
   subparser
-    ( command "run" (info  (pure RunServer) ( progDesc "run server" )))
+    (command "run" (info (pure RunServer) (progDesc "run server")))
+    <|> problemsCommandsParser
 
-  <|> commands
-
-
-commands :: Parser Commands
-commands = subparser (foldMap mkCommand (enumerate @ProblemCommands)
-            <> commandGroup "Problem commands:")
+problemsCommandsParser :: Parser Commands
+problemsCommandsParser =
+  subparser
+    ( foldMap mkCommand (enumerate @ProblemCommands)
+        <> commandGroup "Problem commands:"
+    )
   where
     mkCommand :: ProblemCommands -> Mod CommandFields Commands
     mkCommand c =
-      let name = getCommandName  c
+      let name = getCommandName c
        in command
             name
             ( info
-                (RunProblem  <$>  (Options c <$> useExampleDataset <*> outOptionParser ))
+                (RunProblem <$> (Problem c <$> (ProblemOptions <$> useExampleDataset <*> outOptionParser)))
                 (progDesc $ "Execute problem " <> filter isLetter name)
             )
-    outOptionParser = strOption
-                    ( long "output"
-                    <> short 'o'
-                    <> metavar "FILE"
-                    <> value "out.txt"
-                    <> help "Write output to FILE" )
+    outOptionParser =
+      strOption
+        ( long "output"
+            <> short 'o'
+            <> metavar "FILE"
+            <> value "out.txt"
+            <> help "Write output to FILE"
+        )
+    useExampleDataset :: Parser DatasetOption
+    useExampleDataset = removeBoolBlindness <$> switch (long "example" <> short 'e' <> showDefault <> help "Choose dataset file <problem name>_example.txt")
+      where
+        removeBoolBlindness :: Bool -> DatasetOption
+        removeBoolBlindness b = if b then ExampleDataset else RealDataset
 
 optsWithHelp :: ParserInfo Commands
 optsWithHelp =
   info
-    (allCommands <**> helper)
+    (commandsParser <**> helper)
     ( fullDesc
         <> progDesc "Runs Rosalind problems on a given dataset file Dataset/<problem name>.txt"
         <> header "Rosalind Problem runner"
@@ -88,17 +93,18 @@ optsWithHelp =
 
 run :: Commands -> IO ()
 run RunServer = putStrLn "runserver"
-run (RunProblem prob) = executeCommand $ go prob
-  where     
-    go (Options c@Hamm e o) = (c, e,o, return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput)
-    go (Options c@Revc e o) = (c, e,o, return . ProbRevc.revc)
-    go (Options c@Rna e o ) = (c, e,o, return . fromEither . ProbRna.prob)
-    go (Options c@Revc2 e o) = (c, e,o, return . fromEither . mapRight show . ProbRevc.prob)
-    go (Options c@Prot e o) = (c, e,o, return . fromEither  . ProbProt.prob)
-    go (Options c@Tran e o) = (c, e,o, return . fromEither  . ProbTran.prob)
-    executeCommand (c, dataSetOption,outputFilename, f) = do
-      baseDir <- getCurrentDirectory <&>  (</> "Data")
-      let s = filter isLetter $ getCommandName c
+run (RunProblem prob@ (Problem _ (ProblemOptions dataSetOption outputFilename)))  =
+  executeCommand $ go prob
+  where
+    go (Problem Hamm _) = return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput
+    go (Problem Revc _) = return . ProbRevc.revc
+    go (Problem Rna _) = return . fromEither . ProbRna.prob
+    go (Problem Revc2 _) = return . fromEither . mapRight show . ProbRevc.prob
+    go (Problem Prot _) = return . fromEither . ProbProt.prob
+    go (Problem Tran _) = return . fromEither . ProbTran.prob
+    executeCommand  f = do
+      baseDir <- getCurrentDirectory <&> (</> "Data")
+      let s = filter isLetter $ getCommandName $ probCommand prob
           e' = case dataSetOption of
             ExampleDataset -> "_example"
             RealDataset -> ""
@@ -109,6 +115,9 @@ run (RunProblem prob) = executeCommand $ go prob
         >>= (timeIt . f)
         >>= writeFile (baseDir </> outputFilename)
       putStrLn $ "Done -> " <> outputFilename
+
+getCommandName :: ProblemCommands -> String
+getCommandName = T.unpack . T.toLower . T.pack . show
 
 main :: IO ()
 main = execParser optsWithHelp >>= run
