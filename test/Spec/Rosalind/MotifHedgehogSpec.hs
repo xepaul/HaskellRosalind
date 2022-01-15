@@ -19,20 +19,23 @@ import Test.Hspec (shouldBe)
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog qualified as H
-import Rosalind.Motif (Motif (..), parseMotif, showMotif)
-import Rosalind.ProteinWithStop (ProteinWithStop(..),proteinWithStopMotifString)
+import Rosalind.Motif (Motif (..), parseMotif, showMotif,findSubsWithMotif)
+import Rosalind.ProteinWithStop (ProteinWithStop(..),proteinWithStopMotifString, proteinString)
 
 test_tests :: TestTree
 test_tests =
   testGroup
     "Unit tests Rosalind Motif Hedgehog"
     [ H.testProperty "test Motif tripping" proproundTripMotifMultiple,
-      testCase "test quasiquote " $ example1MotifQuassi `shouldBe`  expectedMotifForExample1   
-
+      testCase "test quasiquote " $
+        let example1MotifQuassi = [proteinWithStopMotifString|N{P}[ST]{P*}|]
+            expectedMotifForExample1 = [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]] 
+        in example1MotifQuassi `shouldBe`  expectedMotifForExample1 
+      , testCase "test findsubs " $
+        let example1Motif = [proteinWithStopMotifString|N{P}[ST]{P*}|]
+            expectedMotifForEx1 = [proteinString|MKNKFKTQEELVNHLKTVGFVFANSEIYNGLANAWDYGPLGVLLKNNLKNLWWKEFVTKQKDVVGLDSAIILNPLVWKASGHLDNFSDPLIDCKNCKARYRADKLIESFDENIHIAENSSNEEFAKVLNDYEISCPTCKQFNWTEIRHFNLMFKTYQGVIEDAKNVVYLRPETAQGIFVNFKNVQRSMRLHLPFGIAQIGKSFRNEITPGNFIFRTREFEQMEIEFFLKEESAYDIFDKYLNQIENWLVSACGLSLNNLRKHEHPKEELSHYSKKTIDFEYNFLHGFSELYGIAYRTNYDLSVHMNLSKKDLTYFDEQTKEKYVPHVIEPSVGVERLLYAILTEATFIEKLENDDERILMDLKYDLAPYKIAVMPLVNKLKDKAEEIYGKILDLNISATFDNSGSIGKRYRRQDAIGTIYCLTIDFDSLDDQQDPSFTIRERNSMAQKRIKLSELPLYLNQKAHEDFQRQCQK|]
+        in findSubsWithMotif example1Motif expectedMotifForEx1   `shouldBe`  [85,118,142,306,395]    
     ]
-
-example1MotifQuassi = [proteinWithStopMotifString|N{P}[ST]{P*}|]
-expectedMotifForExample1 = [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]]
 
 genMotif :: Gen (Motif ProteinWithStop)
 genMotif =
@@ -42,9 +45,7 @@ genMotif =
      ,genOption
       ]
    where
-     genExcept = do
-            p <-  Gen.list (Range.constant 1 4) $ Gen.element (enumerate @ProteinWithStop)
-            return $ MotifAnyExcept p
+     genExcept = MotifAnyExcept <$>  Gen.list (Range.constant 1 4)  (Gen.element (enumerate @ProteinWithStop))           
      genOption = MotifAnyExcept <$> Gen.list (Range.constant 1 4)  (Gen.element (enumerate @ProteinWithStop))
 
 proproundTripMotifMultiple :: Property

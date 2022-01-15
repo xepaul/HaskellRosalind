@@ -25,6 +25,11 @@ import Text.Read (readEither)
 
 data ProteinWithStop = F | L | I | V | S | P | T | A | Y | M | Stop | H | Q | N | K | D | E | C | W | R | G deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
 
+instance SingleCharForm ProteinWithStop where
+  singleCharShow = protein2Char
+  singleCharRead = parseProtein
+  singleChars = enumerate @ProteinWithStop
+
 parseProtein :: Char -> Either String ProteinWithStop
 parseProtein = readEither @ProteinWithStop . fixStarToStop
   where
@@ -63,11 +68,7 @@ proteinString =
       quoteDec = error "quote: Invalid application in dec context."
     }
 
-instance SingleCharForm ProteinWithStop where
-  singleCharShow = protein2Char
-  singleCharRead = parseProtein
-  singleChars _ = enumerate @ProteinWithStop
-
+proteinWithStopMotifString :: QuasiQuoter
 proteinWithStopMotifString = makeMotifQuassiQuoter (Proxy @ProteinWithStop)
 
 -- >>> parseProteinMotif "N{P}[ST]{P*}"

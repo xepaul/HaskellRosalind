@@ -4,12 +4,14 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Rosalind.Motif
   ( Motif (..),
     showMotif,
     makeMotifQuassiQuoter,
     parseMotif,
+    findSubsMotif
   )
 where
 
@@ -28,6 +30,7 @@ import Text.ParserCombinators.Parsec
     many1,
   )
 import Text.Printf (printf)
+import Data.List.Extra (enumerate)
 
 data Motif a
   = MotifValue a
@@ -58,7 +61,7 @@ parseMotif p = mapLeft show <$> parse (motifParser (motifElementParser p)) ""
         Right s -> return s
       where
         getElementChars :: (SingleCharForm a) => Proxy a -> [a]
-        getElementChars _ = singleChars ()
+        getElementChars _ = singleChars 
 
 showMotif :: (SingleCharForm a) => [Motif a] -> [Char]
 showMotif =
@@ -98,4 +101,23 @@ makeMotifQuassiQuoter p =
         parseMotifWithProxy :: (SingleCharForm a) => Proxy a -> String -> Either String [Motif a]
         parseMotifWithProxy p n = parseMotif p n
         getChars :: (SingleCharForm a) => Proxy a -> [a]
-        getChars _ = singleChars ()
+        getChars _ = singleChars
+
+findSubsMotif :: (Eq a) => [Motif a] -> [a] -> [Int]
+findSubsMotif t s =
+  let tLength = length t
+   in reverse $
+        foldl
+          ( \fnd i ->
+              let c  = (take tLength $ drop i s)
+               in if all  matchItem $ zip t c
+                    then (i + 1) : fnd
+                    else fnd
+          )
+          []
+          [0 .. length s - length t]
+      where matchItem :: (Eq a) => (Motif a, a) -> Bool
+            matchItem (m,c) = case m of
+              MotifValue c' -> c'==c
+              MotifAnyExcept str -> c `notElem` str
+              MotifOption str -> c `elem` str
