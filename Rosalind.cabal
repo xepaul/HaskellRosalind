@@ -164,7 +164,6 @@ executable rosalind-cli
                 -Wmissing-fields    
 
 library rosalind-server
-  main-is: Main.hs
   other-modules:
   exposed-modules:
       Api
