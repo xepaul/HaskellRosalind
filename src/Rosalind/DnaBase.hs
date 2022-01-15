@@ -25,11 +25,16 @@ import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax ( Lift )
 import Servant.API (FromHttpApiData (parseUrlPiece))
 
-import Rosalind.Common (readEitherVerbose)
+import Rosalind.Common (readEitherVerbose, SingleCharForm (singleCharShow, singleCharRead, singleChars))
 
 data DnaBase = A | C | G | T 
   deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
             Generic, FromJSON,ToJSON,ToParamSchema,ToSchema)
+
+instance SingleCharForm DnaBase where
+  singleCharShow = head .show
+  singleCharRead c = read [c]
+  singleChars = enumerate @DnaBase
 
 parseDnaBases :: (Traversable t) => t Char -> Either String (t DnaBase)
 parseDnaBases = traverse (readEitherVerbose . (: []))

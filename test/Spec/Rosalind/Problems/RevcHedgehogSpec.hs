@@ -19,6 +19,8 @@ import Test.Tasty.Hedgehog qualified as H
 import Rosalind.Problems.Revc qualified as Revc
 import Rosalind.DnaBase hiding (DnaBase (..))
 import Rosalind.DnaBase qualified as Db
+import Test.Hspec (shouldBe)
+import Test.Tasty.HUnit ( testCase )
 test_tests :: TestTree
 test_tests = testGroup "Tests Rosalind" [unitTests]
 
@@ -30,6 +32,7 @@ unitTests =
         H.testProperty "check sample result" prop0
         , H.testProperty "check revc applied twice is the same as original " prop1
         , H.testProperty "check revc by checking every conversion " prop2
+        , testCase "test findsubs " $ do Revc.revc [dnaString|AAAACCCGGT|]  `shouldBe`  [dnaString|ACCGGGTTTT|]   
     ]
 
 prop0 :: Property

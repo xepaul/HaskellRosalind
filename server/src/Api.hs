@@ -10,10 +10,8 @@
 module Api where
 
 import Data.Either.Extra
-    ( Either(Right, Left), fromEither, mapLeft )
+    ( fromEither, mapLeft )
 import Data.OpenApi ( OpenApi )
-
-import Prelude (Monad (return), String, const,(.))
 import Servant
 import Servant.OpenApi ( HasOpenApi(toOpenApi) )
 
@@ -22,11 +20,15 @@ import Rosalind.Problems.Rna qualified as Rna
 import Rosalind.Problems.Revc qualified as Revc
 import Rosalind.RnaBase (RnaBase)
 
+type Dna2RnaString = "rna" :> Capture "dna" String :> Get '[JSON] String
+type RevcString = "rev" :> Capture "dna" String :> Get '[JSON] String
+type Dna2Rna =  "rna2" :> Capture "dnaT" [DnaBase] :> Get '[JSON] [RnaBase]
+type Revc ="revc2" :> Capture "dnaT" [DnaBase] :> Get '[JSON] [DnaBase]
 type RosalindApi =
-         "rna" :> Capture "dna" String :> Get '[JSON] String
-    :<|> "rna2" :> Capture "dnaT" [DnaBase] :> Get '[JSON] [RnaBase]
-    :<|> "revc" :> Capture "dna" String :> Get '[JSON] String
-    :<|> "revc2" :> Capture "dnaT" [DnaBase] :> Get '[JSON] [DnaBase]
+          Dna2RnaString 
+     :<|> Dna2Rna
+     :<|> RevcString
+     :<|> Revc
 
 rosalindServer :: Server RosalindApi
 rosalindServer =    calcStringRna
@@ -40,7 +42,7 @@ rosalindServer =    calcStringRna
     calcRna = return . Rna.dnaBasesToRna 
     calcStringRevc :: String -> Handler String
     calcStringRevc a = do
-        case Rna.prob a of
+        case Revc.prob a of
           Left _ -> throwError custom404Err
           Right v -> return  v
         where   custom404Err  = err404 { errBody = "Bad dna"}

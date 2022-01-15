@@ -12,7 +12,7 @@ module Spec.Rosalind.Problems.FiltHedgehogSpec where
 
 import Test.Hspec (shouldBe)
 import Test.Tasty
-import Test.Tasty.HUnit
+import Test.Tasty.HUnit ( testCase )
 import Rosalind.Problems.Filt qualified as Filt
 import Spec.Rosalind.Common (readDataset)
 

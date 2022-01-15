@@ -163,9 +163,10 @@ executable rosalind-cli
                 -Wincomplete-record-updates 
                 -Wmissing-fields    
 
-executable server
+library rosalind-server
   main-is: Main.hs
   other-modules:
+  exposed-modules:
       Api
       
   hs-source-dirs:
@@ -185,6 +186,58 @@ executable server
     , openapi3
   default-language: Haskell2010
   ghc-options:         -Wall  
+              -fno-warn-incomplete-uni-patterns
+              -Wincomplete-patterns             
+              -Wincomplete-uni-patterns 
+              -Wincomplete-record-updates 
+              -Wmissing-fields    
+
+test-suite rosalind-server-test
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   testServer/
+    main-is:          Driver.hs
+    build-tool-depends:
+      tasty-discover:tasty-discover     
+    other-modules:    
+      Spec.ApiSpec   
+    build-depends:     
+        base ^>=4.14.1.0
+      , Rosalind-lib
+      , rosalind-server
+      , tasty                  
+      , tasty-expected-failure
+      , hedgehog               
+      , tasty-hedgehog    
+      , tasty-quickcheck   
+      , hspec
+      , containers
+      , tasty-hunit
+      , tasty-hspec
+      , smallcheck       
+      , lens
+      , lens-aeson
+      , containers
+      , extra
+      , parsec
+      , split
+      , QuickCheck
+      , aeson
+      , tasty-th
+      , HUnit
+      , text
+      , unordered-containers
+      , megaparsec  
+      , directory
+      , filepath    
+      , either
+      , servant-client
+      , servant-server
+      , servant
+      , wai
+      , warp
+      , http-client
+    ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
               -Wincomplete-patterns             
               -Wincomplete-uni-patterns 
