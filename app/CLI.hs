@@ -17,7 +17,7 @@ import Rosalind.Problems.Rna qualified as ProbRna
 import Rosalind.Problems.Tran qualified as ProbTran
 import Rosalind.Problems.Frmt qualified as ProbFrmt
 import System.Directory
-import System.FilePath.Posix
+import System.FilePath.Posix ( (</>) )
 import System.TimeIt
 import qualified Data.List as List
 

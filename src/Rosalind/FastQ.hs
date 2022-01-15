@@ -5,7 +5,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
-module Rosalind.FastQ where
+module Rosalind.Fastq where
 
 import Control.Monad.Except ( when, MonadError, liftEither )
 import Data.Text (Text)
@@ -21,12 +21,12 @@ data FastqParsingError = NonMatchingLengths Int Int Int [Char] [Char]
 instance ShowErrorComponent FastqParsingError where
   showErrorComponent = show
 
-type ParserB = Parsec FastqParsingError Text
+type ParserB = Parsec String Text
 
-data GenericFastaQ = GenericFastaQ {fqDescription :: String, fqDna :: String, fqQuality::String}
+data Fastaq = Fastaq {fqDescription :: String, fqDna :: String, fqQuality::String}
                      deriving (Show,Eq)
 
-parseFastaQ :: ParserB GenericFastaQ
+parseFastaQ :: ParserB Fastaq
 parseFastaQ = do
       _ <- string "@"
       i <- manyTill (choice anyLetter) (try (char '\n'))
@@ -34,16 +34,17 @@ parseFastaQ = do
       _ <- manyTill (char '+') (try (char '\n'))
       qs <- concat <$>count (length dna-1 ) (manyTill fastaqQualityCharsParser (char '\n'))
       let dna' = concat dna
-      when (length dna' /= length qs) $  customFailure $ NonMatchingLengths (length dna') (length qs) (length dna) dna' qs
-      return $ GenericFastaQ i dna' qs
+      when (length dna' /= length qs) $  customFailureWith $ NonMatchingLengths (length dna') (length qs) (length dna) dna' qs
+      return $ Fastaq i dna' qs
   where
         dnaLetters =choice $ map char "ACGT"
         fastaqQualityCharsParser = choice $ map char fastaqQualityChars
         fastaqQualityChars = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         anyLetter =  map char $ filter (/= '\n') enumerate
+        customFailureWith = customFailure. show
 
-parseFastaq :: (MonadError String m) => String -> m GenericFastaQ
+parseFastaq :: (MonadError String m) => String -> m Fastaq
 parseFastaq = liftEither . mapLeft (\x -> "fastq parsingError " <> show x )  . parse parseFastaQ "" . T.pack
 
-parseMultipleFastaq :: (MonadError String m) => String -> m [GenericFastaQ]
+parseMultipleFastaq :: (MonadError String m) => String -> m [Fastaq]
 parseMultipleFastaq = liftEither . mapLeft (\x -> "fastq parsingError " <> show x )  . parse ( many parseFastaQ ) "" . T.pack

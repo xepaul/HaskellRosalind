@@ -16,7 +16,8 @@ readDatasetAndExpectedResult s = do
 readDataset :: [Char] -> IO String
 readDataset s = do
     baseD <- baseDir
-    readFile (baseD </> s <>"_example.txt")
+    let file = baseD </> s <>"_example.txt"    
+    readFile file
 testExampleDatasetMatchesExpected :: (Show a, Eq a) => [Char] -> (String -> Either a String) -> IO ()
 testExampleDatasetMatchesExpected s f = do
     (dataset,expectedResult) <- readDatasetAndExpectedResult s

@@ -18,12 +18,13 @@ library Rosalind-lib
                       Rosalind.Problems.Subs 
                       Rosalind.Problems.Frmt 
                       Rosalind.Problems.FiltDataset
+                      Rosalind.Problems.Filt
                       Rosalind.Common
                       Rosalind.Codon2ProteinConv
                       Rosalind.DnaBase
                       Rosalind.RnaBase
                       Rosalind.Fasta
-                      Rosalind.FastQ 
+                      Rosalind.Fastq
                       Rosalind.GeneticStringConversion
                       Rosalind.Motif 
                       Rosalind.ProteinWithStop
@@ -102,6 +103,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.SubsHedgehogSpec
         Spec.Rosalind.FastaHedgehogSpec
         Spec.Rosalind.MotifHedgehogSpec
+        Spec.Rosalind.Problems.FiltHedgehogSpec
     build-depends:     
         base ^>=4.14.1.0
       , Rosalind-lib
