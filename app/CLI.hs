@@ -19,6 +19,7 @@ import Rosalind.Problems.Frmt qualified as ProbFrmt
 import System.Directory
 import System.FilePath.Posix
 import System.TimeIt
+import qualified Data.List as List
 
 data Commands
   = RunServer
@@ -111,6 +112,15 @@ run (RunProblem prob@ (Problem selectedProblem dataSetOption outputFilename))  =
       putStrLn $ "Evaluating " <> s <> " -> " <> inputFilename
       readFile (baseDir </> inputFilename)
         >>= (timeIt . f)
+        >>= (\x -> do
+              putStrLn "Result:"
+              if   List.length x >1000 then  do
+                    putStrLn $ List.take 1000 x
+                    putStrLn "..."
+              else do
+                    putStrLn $ List.take 1000 x
+              return x
+              )
         >>= writeFile (baseDir </> outputFilename)
       putStrLn $ "Done -> " <> outputFilename
 
