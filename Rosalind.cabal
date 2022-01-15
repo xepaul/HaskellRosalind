@@ -7,7 +7,7 @@ extra-source-files:
     README.md
 
 library Rosalind-lib
-    exposed-modules:  
+  exposed-modules:  
                       Rosalind.Problems.Rna
                       Rosalind.Problems.Hamm
                       Rosalind.Problems.Revc
@@ -17,18 +17,19 @@ library Rosalind-lib
                       Rosalind.Problems.Orf
                       Rosalind.Problems.Subs 
                       Rosalind.Problems.Frmt 
-                      Rosalind.RosalindStrings
+                      Rosalind.Problems.FiltDataset
+                      Rosalind.Common
+                      Rosalind.Codon2ProteinConv
                       Rosalind.DnaBase
                       Rosalind.RnaBase
                       Rosalind.Fasta
+                      Rosalind.FastQ 
                       Rosalind.GeneticStringConversion
+                      Rosalind.Motif 
                       Rosalind.ProteinWithStop
-                      Rosalind.Codon2ProteinConv
-                      Rosalind.Motif
-                      Rosalind.Common
-                      Rosalind.Services.Entrez
-
-    build-depends:    base ^>=4.14.1.0
+                      Rosalind.RosalindStrings                                                                                       
+                      Rosalind.Services.Entrez                      
+  build-depends:    base ^>=4.14.1.0
                       , containers
                       , extra
                       , lens
@@ -70,15 +71,15 @@ library Rosalind-lib
                       , servant-openapi3
                       , openapi3    
                       , servant                   
-    hs-source-dirs:   src/
-    default-language: Haskell2010
-    ghc-options: 
-              -Wall 
-              -fno-warn-incomplete-uni-patterns
-              -Wincomplete-patterns             
-              -Wincomplete-uni-patterns 
-              -Wincomplete-record-updates 
-              -Wmissing-fields   
+  hs-source-dirs:   src/
+  default-language: Haskell2010
+  ghc-options: 
+            -Wall 
+            -fno-warn-incomplete-uni-patterns
+            -Wincomplete-patterns             
+            -Wincomplete-uni-patterns 
+            -Wincomplete-record-updates 
+            -Wmissing-fields   
 
 test-suite Rosalind-test
     default-language: Haskell2010

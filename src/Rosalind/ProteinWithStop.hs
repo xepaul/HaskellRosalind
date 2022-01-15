@@ -37,7 +37,7 @@ parseProtein = readEither @ProteinWithStop . fixStarToStop
     fixStarToStop c = if '*' == c then "Stop" else [c]
 
 parseProteinString :: (Traversable t) => t Char -> Either String (t ProteinWithStop)
-parseProteinString = traverse ((readEitherVerbose @ProteinWithStop) . fixStarToStop)
+parseProteinString = traverse ((readEitherVerbose @_ @ProteinWithStop) . fixStarToStop)
   where
     fixStarToStop :: Char -> [Char]
     fixStarToStop c = if '*' == c then "Stop" else [c]

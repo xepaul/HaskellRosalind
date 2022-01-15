@@ -3,9 +3,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Rosalind.Services.Entrez where
 
-import Control.Monad.Except
+import Control.Monad.Except ( MonadError, MonadIO )
 import Data.ByteString.Internal qualified as BS
-import Data.List
+import Data.List ( intercalate )
 import Data.Text qualified as T
 import Network.HTTP.Req
 import Rosalind.Fasta (parseManyCharFastas', RosalindFasta)

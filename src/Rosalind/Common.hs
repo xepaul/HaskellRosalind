@@ -1,16 +1,18 @@
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Rosalind.Common where
 
 import Data.Either.Combinators ( mapLeft )
 import Text.Read ( readEither )
+import Control.Monad.Except (MonadError, liftEither)
 
 class SingleCharForm a  where
     singleCharShow :: a -> Char
     singleCharRead :: Char -> Either String a
     singleChars :: [a]
 
-readEitherVerbose :: Read a => String -> Either String a
-readEitherVerbose x = mapLeft (\y -> y++":"++x) $ readEither  x
+readEitherVerbose :: ( MonadError String m, Read a ) => String -> m a
+readEitherVerbose x = liftEither $mapLeft (\y -> y++":"++x) $ readEither  x
 
 count :: (a -> Bool) -> [a] -> Int
 count p = go 0
