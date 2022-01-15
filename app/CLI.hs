@@ -1,7 +1,8 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 
-module RosalindProblemRunner where
+module CLI where
 
 import Data.Char (isLetter)
 import Data.Either.Extra
@@ -17,7 +18,12 @@ import System.TimeIt
 import System.Directory
 import Data.Functor
 import System.FilePath.Posix
+
 data Commands
+  = RunServer
+  | RunProblem Options
+
+data ProblemCommands
   = Hamm
   | Rna
   | Revc
@@ -26,11 +32,11 @@ data Commands
   | Tran
   deriving (Eq, Show, Bounded, Enum)
 
-getCommandName :: Commands -> String
+getCommandName :: ProblemCommands -> String
 getCommandName = T.unpack . T.toLower . T.pack . show
 
 data Options = Options
-  { optCommands :: Commands,
+  { optCommands :: ProblemCommands,
     optDataSetOption :: DatasetOption
   }
 
@@ -42,34 +48,41 @@ useExampleDataset = removeBoolBlindness <$> switch (long "example" <> short 'e' 
     removeBoolBlindness :: Bool -> DatasetOption
     removeBoolBlindness b = if b then ExampleDataset else RealDataset
 
+allCommands :: Parser Commands
+allCommands =
+  subparser
+    ( command "run" (info  (pure RunServer) ( progDesc "run server" )))
+
+  <|> commands
+
+
 commands :: Parser Commands
-commands = subparser $ foldMap mkCommand enumerate
+commands = subparser (foldMap mkCommand (enumerate @ProblemCommands)
+            <> commandGroup "Problem commands:")
   where
-    mkCommand :: Commands -> Mod CommandFields Commands
+    mkCommand :: ProblemCommands -> Mod CommandFields Commands
     mkCommand c =
-      let name = getCommandName c
+      let name = getCommandName  c
        in command
             name
             ( info
-                (pure c)
+                (RunProblem  <$>  (Options c <$> useExampleDataset))
                 (progDesc $ "Execute problem " <> filter isLetter name)
             )
 
-opts :: Parser Options
-opts = Options <$> commands <*> useExampleDataset
-
-optsWithHelp :: ParserInfo Options
+optsWithHelp :: ParserInfo Commands
 optsWithHelp =
   info
-    (opts <**> helper)
+    (allCommands <**> helper)
     ( fullDesc
         <> progDesc "Runs Rosalind problems on a given dataset file Dataset/<problem name>.txt"
         <> header "Rosalind Problem runner"
     )
 
-run :: Options -> IO ()
-run = executeCommand . go
-  where
+run :: Commands -> IO ()
+run RunServer = putStrLn "runserver"
+run (RunProblem prob) = executeCommand $ go prob
+  where     
     go (Options c@Hamm e) = (c, e, return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput)
     go (Options c@Revc e) = (c, e, return . ProbRevc.revc)
     go (Options c@Rna e) = (c, e, return . fromEither . ProbRna.prob)

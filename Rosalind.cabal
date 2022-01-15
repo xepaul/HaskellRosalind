@@ -135,9 +135,9 @@ test-suite Rosalind-test
               -Wmissing-fields    
 
 
-executable RosalindCommandExecuter
-  main-is: RosalindProblemRunner.hs
-  ghc-options:  -main-is RosalindProblemRunner
+executable rosalind-cli
+  main-is: CLI.hs
+  ghc-options:  -main-is CLI
   other-modules:
   hs-source-dirs: app/  
   ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
@@ -151,12 +151,12 @@ executable RosalindCommandExecuter
     , directory
     , filepath
   default-language: Haskell2010
-  ghc-options:         -Wall  
-              -fno-warn-incomplete-uni-patterns
-              -Wincomplete-patterns             
-              -Wincomplete-uni-patterns 
-              -Wincomplete-record-updates 
-              -Wmissing-fields    
+  ghc-options:  -Wall  
+                -fno-warn-incomplete-uni-patterns
+                -Wincomplete-patterns             
+                -Wincomplete-uni-patterns 
+                -Wincomplete-record-updates 
+                -Wmissing-fields    
 
 executable server
   main-is: Main.hs
