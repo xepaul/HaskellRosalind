@@ -7,7 +7,7 @@ module CLI where
 import Data.Char (isLetter)
 import Data.Either.Extra
 import Data.Functor
-import Data.List.Extra
+import Data.List.Extra ( enumerate )
 import Data.Text qualified as T
 import Options.Applicative
 import Rosalind.Problems.Hamm qualified as ProbHamm
@@ -15,6 +15,7 @@ import Rosalind.Problems.Prot qualified as ProbProt
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
 import Rosalind.Problems.Tran qualified as ProbTran
+import Rosalind.Problems.Frmt qualified as ProbFrmt
 import System.Directory
 import System.FilePath.Posix
 import System.TimeIt
@@ -30,6 +31,7 @@ data ProblemCommands
   | Revc2
   | Prot
   | Tran
+  | Frmt
   deriving (Eq, Show, Bounded, Enum)
 
 data Problem = Problem
@@ -97,6 +99,7 @@ run (RunProblem prob@ (Problem selectedProblem dataSetOption outputFilename))  =
     go (Problem Revc2 _ _) = return . fromEither . mapRight show . ProbRevc.prob
     go (Problem Prot _ _) = return . fromEither . ProbProt.prob
     go (Problem Tran _ _) = return . fromEither . ProbTran.prob
+    go (Problem Frmt _ _) = \x -> ProbFrmt.prob x <&> fromEither
     executeCommand  f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
       let s = filter isLetter $ getCommandName selectedProblem
