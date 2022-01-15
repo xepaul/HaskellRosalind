@@ -11,7 +11,7 @@ module Rosalind.Motif
     showMotif,
     makeMotifQuassiQuoter,
     parseMotif,
-    findSubsMotif
+    findSubsWithMotif
   )
 where
 
@@ -103,8 +103,8 @@ makeMotifQuassiQuoter p =
         getChars :: (SingleCharForm a) => Proxy a -> [a]
         getChars _ = singleChars
 
-findSubsMotif :: (Eq a) => [Motif a] -> [a] -> [Int]
-findSubsMotif t s =
+findSubsWithMotif :: (Eq a) => [Motif a] -> [a] -> [Int]
+findSubsWithMotif t s =
   let tLength = length t
    in reverse $
         foldl
