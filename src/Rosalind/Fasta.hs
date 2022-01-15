@@ -1,12 +1,15 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Rosalind.Fasta 
-    (                    
+{-# LANGUAGE FlexibleContexts #-}
+module Rosalind.Fasta
+    (
         parseDnaCharFasta
         , parseManyDnaBaseFastas
         , parseTwoDnaBaseFastas
         , RosalindFasta(..)
         , showRosalindFasta
+        , parseManyCharFastas
+        , parseManyCharFastas'
     )
 where
 
@@ -18,6 +21,7 @@ import Text.Megaparsec.Char
 import Text.Printf ( printf )
 
 import Rosalind.DnaBase ( DnaBase(..), parseDnaBases )
+import Control.Monad.Except (MonadError, liftEither)
 
 data RosalindFasta a = RosalindFasta {
                                       fDescripton :: String
@@ -57,11 +61,23 @@ fastaParser p = do
 parseDnaCharFasta :: Text -> Either String (RosalindFasta [Char])
 parseDnaCharFasta = mapLeft show <$> runParser (fastaParser dnaCharStringLineParser) ""
 
-parseManyDnaBaseFastas :: Text -> Either String [RosalindFasta [DnaBase]]
-parseManyDnaBaseFastas = mapLeft show <$> runParser (twoFastasParser dnabaseStringLineParser) ""
+parseManyCharFastas' :: (MonadError String m) => Text -> m [RosalindFasta [Char]]
+parseManyCharFastas' = liftEither . mapLeft show <$> runParser (fastasParser dnaCharStringLineParser) ""
     where
-    twoFastasParser :: ParserB [a] -> ParserB [RosalindFasta [a]]
-    twoFastasParser p = many (fastaParser p)
+    fastasParser :: ParserB [a] -> ParserB [RosalindFasta [a]]
+    fastasParser p = many (fastaParser p)
+
+parseManyCharFastas :: Text -> Either String [RosalindFasta [Char]]
+parseManyCharFastas = mapLeft show <$> runParser (fastasParser dnaCharStringLineParser) ""
+    where
+    fastasParser :: ParserB [a] -> ParserB [RosalindFasta [a]]
+    fastasParser p = many (fastaParser p)
+
+parseManyDnaBaseFastas :: Text -> Either String [RosalindFasta [DnaBase]]
+parseManyDnaBaseFastas = mapLeft show <$> runParser (fastasParser dnabaseStringLineParser) ""
+    where
+    fastasParser :: ParserB [a] -> ParserB [RosalindFasta [a]]
+    fastasParser p = many (fastaParser p)
 
 showRosalindFasta :: (Show a) => RosalindFasta [a] -> String
 showRosalindFasta RosalindFasta{fDescripton=fastaId,fData=dna } =

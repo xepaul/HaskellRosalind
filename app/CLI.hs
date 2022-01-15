@@ -35,11 +35,6 @@ data ProblemCommands
 data Problem = Problem
   {
     probCommand :: ProblemCommands,
-    probOptions :: ProblemOptions
-  }
-
-data ProblemOptions = ProblemOptions
-  {
     optDataSetOption :: DatasetOption,
     optOutOption :: String
   }
@@ -65,7 +60,7 @@ problemsCommandsParser =
        in command
             name
             ( info
-                (RunProblem <$> (Problem c <$> (ProblemOptions <$> useExampleDataset <*> outOptionParser)))
+                (RunProblem <$> (Problem c <$>  useExampleDataset <*> outOptionParser))
                 (progDesc $ "Execute problem " <> filter isLetter name)
             )
     outOptionParser =
@@ -93,18 +88,18 @@ optsWithHelp =
 
 run :: Commands -> IO ()
 run RunServer = putStrLn "runserver"
-run (RunProblem prob@ (Problem _ (ProblemOptions dataSetOption outputFilename)))  =
+run (RunProblem prob@ (Problem selectedProblem dataSetOption outputFilename))  =
   executeCommand $ go prob
   where
-    go (Problem Hamm _) = return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput
-    go (Problem Revc _) = return . ProbRevc.revc
-    go (Problem Rna _) = return . fromEither . ProbRna.prob
-    go (Problem Revc2 _) = return . fromEither . mapRight show . ProbRevc.prob
-    go (Problem Prot _) = return . fromEither . ProbProt.prob
-    go (Problem Tran _) = return . fromEither . ProbTran.prob
+    go (Problem Hamm _ _) = return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput
+    go (Problem Revc _ _) = return . ProbRevc.revc
+    go (Problem Rna _ _) = return . fromEither . ProbRna.prob
+    go (Problem Revc2 _ _) = return . fromEither . mapRight show . ProbRevc.prob
+    go (Problem Prot _ _) = return . fromEither . ProbProt.prob
+    go (Problem Tran _ _) = return . fromEither . ProbTran.prob
     executeCommand  f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
-      let s = filter isLetter $ getCommandName $ probCommand prob
+      let s = filter isLetter $ getCommandName selectedProblem
           e' = case dataSetOption of
             ExampleDataset -> "_example"
             RealDataset -> ""
