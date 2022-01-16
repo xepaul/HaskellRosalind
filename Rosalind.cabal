@@ -159,6 +159,8 @@ executable rosalind-cli
   main-is: CLI.hs
   ghc-options:  -main-is CLI
   other-modules:
+    Rosalind.CLI.ProblemRunner
+    Rosalind.CLI.RouteCommands
   hs-source-dirs: app/  
   ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
   build-depends:
