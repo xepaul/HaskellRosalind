@@ -2,13 +2,13 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 
 module Spec.ApiSpec where
 
-import Api (Dna2RnaString, RevcString, app)
 import Data.Data (Proxy (..))
 import Network.HTTP.Client (defaultManagerSettings, newManager)
-import qualified Network.Wai.Handler.Warp as Warp
+import Network.Wai.Handler.Warp qualified as Warp
 import Servant.Client
   ( BaseUrl (baseUrlPort),
     client,
@@ -19,6 +19,8 @@ import Servant.Client
 import Test.Hspec (Spec, around, describe, it, runIO, shouldBe)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Hspec (testSpec)
+
+import Rosalind.Server.Api (Dna2RnaString, RevcString, app)
 
 withUserApp :: (Warp.Port -> IO ()) -> IO ()
 withUserApp = Warp.testWithApplication (pure app)

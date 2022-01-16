@@ -7,7 +7,7 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Api where
+module Rosalind.Server.Api where
 
 import Data.Either.Extra
     ( fromEither, mapLeft )

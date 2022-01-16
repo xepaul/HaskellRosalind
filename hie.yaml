@@ -12,5 +12,5 @@ cradle:
     - path: "server/src"
       component: "Rosalind:lib:rosalind-server"
 
-    - path: "testServer/"
+    - path: "server/test"
       component: "Rosalind:test:rosalind-server-test"

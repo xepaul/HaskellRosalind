@@ -7,19 +7,22 @@ module CLI where
 import Data.Char (isLetter)
 import Data.Either.Extra
 import Data.Functor
+import Data.List qualified as List 
 import Data.List.Extra ( enumerate )
 import Data.Text qualified as T
 import Options.Applicative
+
+import System.Directory ( getCurrentDirectory )
+import System.FilePath.Posix ( (</>) )
+import System.TimeIt ( timeIt )
+
 import Rosalind.Problems.Hamm qualified as ProbHamm
 import Rosalind.Problems.Prot qualified as ProbProt
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
 import Rosalind.Problems.Tran qualified as ProbTran
 import Rosalind.Problems.Frmt qualified as ProbFrmt
-import System.Directory
-import System.FilePath.Posix ( (</>) )
-import System.TimeIt
-import qualified Data.List as List
+import Rosalind.Server.App qualified as Rs (runServer)
 
 data Commands
   = RunServer
@@ -90,7 +93,11 @@ optsWithHelp =
     )
 
 run :: Commands -> IO ()
-run RunServer = putStrLn "runserver"
+run RunServer = do
+  putStrLn "runserver"
+  Rs.runServer 8081
+  
+
 run (RunProblem prob@ (Problem selectedProblem dataSetOption outputFilename))  =
   executeCommand $ go prob
   where

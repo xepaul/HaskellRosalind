@@ -170,6 +170,8 @@ executable rosalind-cli
     , timeit
     , directory
     , filepath
+    , warp
+    , rosalind-server
   default-language: Haskell2010
   ghc-options:  -Wall  
                 -fno-warn-incomplete-uni-patterns
@@ -182,7 +184,8 @@ library rosalind-server
   import: deps
   other-modules:
   exposed-modules:
-      Api      
+      Rosalind.Server.Api      
+      Rosalind.Server.App      
   hs-source-dirs:
       server/src
   build-depends:
