@@ -5,11 +5,17 @@ module Rosalind.Common where
 import Data.Either.Combinators ( mapLeft )
 import Text.Read ( readEither )
 import Control.Monad.Except (MonadError, liftEither)
+import Data.List.Extra (enumerate)
 
 class SingleCharForm a  where
     singleCharShow :: a -> Char
     singleCharRead ::  (MonadError String m) => Char -> m a
     singleChars :: [a]
+
+instance SingleCharForm Char where
+  singleCharShow = id
+  singleCharRead = return
+  singleChars = enumerate
 
 readEitherVerbose :: ( MonadError String m, Read a ) => String -> m a
 readEitherVerbose x = liftEither $mapLeft (\y -> y++":"++x) $ readEither  x

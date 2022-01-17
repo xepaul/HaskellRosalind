@@ -22,6 +22,7 @@ import Text.Printf ( printf )
 
 import Rosalind.DnaBase ( DnaBase(..), parseDnaBases )
 import Control.Monad.Except (MonadError, liftEither)
+import Rosalind.Common (singleCharShow, SingleCharForm)
 
 data RosalindFasta a = RosalindFasta {
                                       fDescripton :: String
@@ -79,11 +80,11 @@ parseManyDnaBaseFastas = mapLeft show <$> runParser (fastasParser dnabaseStringL
     fastasParser :: ParserB [a] -> ParserB [RosalindFasta [a]]
     fastasParser p = many (fastaParser p)
 
-showRosalindFasta :: (Show a) => RosalindFasta [a] -> String
+showRosalindFasta :: (SingleCharForm a) => RosalindFasta [a] -> String
 showRosalindFasta RosalindFasta{fDescripton=fastaId,fData=dna } =
    let dnaLines = chunksOf 60 dna
    in
-   ">" <> printf fastaId <> "\n" <> printf  (filter (/= '"') $ unlines (map show dnaLines))
+   ">" <> printf fastaId <> "\n" <> unlines ((map . map) singleCharShow dnaLines)
 
 parseTwoDnaBaseFastas :: Text -> Either String (RosalindFasta [DnaBase], RosalindFasta [DnaBase])
 parseTwoDnaBaseFastas = mapLeft show <$> runParser (twoFastasParser dnabaseStringLineParser) ""
