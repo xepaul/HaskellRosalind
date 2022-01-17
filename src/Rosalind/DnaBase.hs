@@ -23,9 +23,9 @@ import GHC.Generics (Generic)
 import Language.Haskell.TH qualified as TH ( Exp, Q )
 import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax ( Lift )
-import Servant.API (FromHttpApiData (parseUrlPiece))
+import Servant.API (FromHttpApiData (..), ToHttpApiData (toUrlPiece))
 
-import Rosalind.Common (readEitherVerbose, SingleCharForm (singleCharShow, singleCharRead, singleChars))
+import Rosalind.Common (readEitherVerbose, SingleCharForm (..))
 
 data DnaBase = A | C | G | T 
   deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
@@ -39,7 +39,7 @@ instance SingleCharForm DnaBase where
 parseDnaBases :: (Traversable t) => t Char -> Either String (t DnaBase)
 parseDnaBases = traverse (readEitherVerbose . (: []))
 
-dnaBases2String :: [DnaBase] -> String
+dnaBases2String :: (Foldable t) =>  t DnaBase -> String
 dnaBases2String = concatMap show
 
 makeDnaBaseString :: String -> TH.Q TH.Exp
@@ -59,3 +59,9 @@ dnaString =
 
 instance FromHttpApiData [DnaBase] where
   parseUrlPiece  = mapLeft T.pack . parseDnaBases . T.unpack
+
+instance FromHttpApiData DnaBase where
+  parseUrlPiece  =  mapLeft T.pack . readEitherVerbose @_ @DnaBase . T.unpack
+
+instance ToHttpApiData [DnaBase] where  
+    toUrlPiece = T.pack . dnaBases2String
