@@ -6,7 +6,7 @@ import Rosalind.ProteinWithStop qualified as P(ProteinWithStop(..))
 import Rosalind.DnaBase (DnaBase)
 import Rosalind.GeneticStringConversion (Dna2Rna(dna2Rna))
 import Rosalind.RnaBase (RnaBase)
-import Rosalind.Problems.Revc (DnaStrandComplementer(complementStrand))
+import Rosalind.Problems.Revc (DnaStrandRevComplementer(revComplementStrand))
 
 import Data.Set (Set)
 import Data.Set qualified as Set
@@ -19,7 +19,7 @@ import Data.Either (rights)
 orf :: [DnaBase] ->  Set [ProteinWithStop]
 orf sDna = do
   let rna = frames  $ map dna2Rna sDna
-  let rna' = frames $ map dna2Rna $ complementStrand sDna
+  let rna' = frames $ map dna2Rna $ revComplementStrand sDna
   let fndFrames = concatMap startAnywhere $ rna  ++ rna'
   Set.fromList $ map head $ group $ sort $ filter (not . null)
     fndFrames
