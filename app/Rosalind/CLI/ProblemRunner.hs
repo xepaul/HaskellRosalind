@@ -59,13 +59,13 @@ executeProblem :: Problem -> IO ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) =
   executeCommand $ go selectedProblem
   where
-    go Hamm = return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput
-    go Revc = return . fromEither .ProbRevc.prob
-    go Rna  = return . fromEither . ProbRna.prob
-    go Revc2 = return . fromEither . mapRight show . ProbRevc.prob
-    go Prot = return . fromEither . ProbProt.prob
-    go Tran = return . fromEither . ProbTran.prob
-    go Frmt = \x -> ProbFrmt.prob x <&> fromEither
+    go Hamm = return . mapRight show . ProbHamm.findSubsAndPrintFromInput
+    go Revc = return .ProbRevc.prob
+    go Rna  = return . ProbRna.prob
+    go Revc2 = return. mapRight show . ProbRevc.prob
+    go Prot = return . ProbProt.prob
+    go Tran = return . ProbTran.prob
+    go Frmt = \x -> ProbFrmt.prob x
     executeCommand f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
       let s = filter isLetter $ getCommandName selectedProblem
@@ -77,15 +77,18 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
       putStrLn $ "Evaluating " <> s <> " -> " <> inputFilename
       readFile (baseDir </> inputFilename)
         >>= timeIt . f
-        >>= ( \x -> do
-                putStrLn "Result:"
-                if List.length x > 1000
-                  then do
-                    putStrLn $ List.take 1000 x
-                    putStrLn "..."
-                  else
-                    putStrLn $ List.take 1000 x
-                return x
-            )
-        >>= writeFile (baseDir </> outputFilename)
+        >>= ( \r -> do
+                case r of
+                  Right x-> do
+                    putStrLn "Result:"
+                    if List.length x > 1000
+                      then do
+                        putStrLn $ List.take 1000 x
+                        putStrLn "..."
+                      else
+                        putStrLn $ List.take 1000 x
+                    writeFile (baseDir </> outputFilename) x
+                  Left v -> do putStrLn $ "Error:" <> v
+
+            )    
       putStrLn $ "Done -> " <> outputFilename
