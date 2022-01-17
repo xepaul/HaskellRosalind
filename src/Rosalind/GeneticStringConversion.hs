@@ -27,21 +27,6 @@ instance Dna2Rna DnaBase RnaBase where
                 D.T -> R.U
 
 instance Dna2Rna (RChar 'Dna)  (RChar 'Rna) where  dna2Rna = RS.dnaToRna
-instance Dna2Rna Char  Char where
-    dna2Rna = \case
-                'A' -> 'A'
-                'C' -> 'C'
-                'G' -> 'G'
-                'T' -> 'U'
-                a -> error $ "bad dna Char :" <> show a
-
-instance DnaComplementer Char where
-  complement c = case c of
-               'A' -> 'T'
-               'T' -> 'A'
-               'C' -> 'G'
-               'G' -> 'C'
-               a -> error $ "bad dna Char :" <> show a
 
 instance DnaComplementer DnaBase where
   complement c = case c of

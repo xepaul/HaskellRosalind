@@ -56,16 +56,16 @@ getCommandName :: ProblemCommands -> String
 getCommandName = T.unpack . T.toLower . T.pack . show
 
 executeProblem :: Problem -> IO ()
-executeProblem prob@(Problem selectedProblem dataSetOption outputFilename) =
-  executeCommand $ go prob
+executeProblem (Problem selectedProblem dataSetOption outputFilename) =
+  executeCommand $ go selectedProblem
   where
-    go (Problem Hamm _ _) = return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput
-    go (Problem Revc _ _) = return . ProbRevc.revc
-    go (Problem Rna _ _) = return . fromEither . ProbRna.prob
-    go (Problem Revc2 _ _) = return . fromEither . mapRight show . ProbRevc.prob
-    go (Problem Prot _ _) = return . fromEither . ProbProt.prob
-    go (Problem Tran _ _) = return . fromEither . ProbTran.prob
-    go (Problem Frmt _ _) = \x -> ProbFrmt.prob x <&> fromEither
+    go Hamm = return . fromEither . mapRight show . ProbHamm.findSubsAndPrintFromInput
+    go Revc = return . fromEither .ProbRevc.prob
+    go Rna  = return . fromEither . ProbRna.prob
+    go Revc2 = return . fromEither . mapRight show . ProbRevc.prob
+    go Prot = return . fromEither . ProbProt.prob
+    go Tran = return . fromEither . ProbTran.prob
+    go Frmt = \x -> ProbFrmt.prob x <&> fromEither
     executeCommand f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
       let s = filter isLetter $ getCommandName selectedProblem
@@ -76,14 +76,14 @@ executeProblem prob@(Problem selectedProblem dataSetOption outputFilename) =
       putStrLn $ "Dataset option: " <> show dataSetOption
       putStrLn $ "Evaluating " <> s <> " -> " <> inputFilename
       readFile (baseDir </> inputFilename)
-        >>= (timeIt . f)
+        >>= timeIt . f
         >>= ( \x -> do
                 putStrLn "Result:"
                 if List.length x > 1000
                   then do
                     putStrLn $ List.take 1000 x
                     putStrLn "..."
-                  else do
+                  else
                     putStrLn $ List.take 1000 x
                 return x
             )
