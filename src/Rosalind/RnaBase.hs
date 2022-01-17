@@ -11,7 +11,8 @@ module Rosalind.RnaBase
   ( parseRnaBases,
     RnaBase (..),
     rnaString,
-    rnaBases2String
+    rnaBases2String,
+    rnaBaseMotifString
   )
 where
 import Data.Aeson (FromJSON, ToJSON)
@@ -26,6 +27,8 @@ import Data.Text qualified as T
 import Servant.API (FromHttpApiData (..), ToHttpApiData (toUrlPiece))
 
 import Rosalind.Common (SingleCharForm(..), readEitherVerbose)
+import Rosalind.Motif (makeMotifQuassiQuoter)
+import Data.Data (Proxy(Proxy))
 
 data RnaBase = A | C | G | U 
   deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
@@ -33,7 +36,7 @@ data RnaBase = A | C | G | U
 
 instance SingleCharForm RnaBase where
   singleCharShow = head .show
-  singleCharRead c = read [c]
+  singleCharRead c = readEitherVerbose @_ @RnaBase [c]
   singleChars = enumerate @RnaBase
 
 parseRnaBases :: (Traversable t) => t Char  -> Either String (t RnaBase)
@@ -55,6 +58,9 @@ rnaString =
       quoteType = error "quote: Invalid application in pattern context.",
       quoteDec = error "quote: Invalid application in pattern context."
     }
+
+rnaBaseMotifString :: QuasiQuoter
+rnaBaseMotifString = makeMotifQuassiQuoter (Proxy @RnaBase)
 
 instance FromHttpApiData [RnaBase] where
   parseUrlPiece  = mapLeft T.pack . parseRnaBases . T.unpack

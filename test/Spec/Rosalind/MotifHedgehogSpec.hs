@@ -19,15 +19,28 @@ import Test.Hspec (shouldBe)
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog qualified as H
+
+import Rosalind.DnaBase (dnaBaseMotifString)
+import Rosalind.DnaBase qualified as Db (DnaBase(..))
 import Rosalind.Motif (Motif (..), parseMotif, showMotif,findSubsWithMotif)
+import Rosalind.RnaBase  qualified as Rb (RnaBase(..))
+import Rosalind.RnaBase (rnaBaseMotifString)
 import Rosalind.ProteinWithStop (ProteinWithStop(..),proteinWithStopMotifString, proteinString)
 
 test_tests :: TestTree
 test_tests =
   testGroup
     "Unit tests Rosalind Motif Hedgehog"
-    [ H.testProperty "test Motif tripping" proproundTripMotifMultiple,
-      testCase "test quasiquote " $
+    [ H.testProperty "test Motif tripping" proproundTripMotifMultiple
+      , testCase "test rnaBase quasiquote " $
+        let example1MotifQuassi = [rnaBaseMotifString|A{C}[GU]{G}|]
+            expectedMotifForExample1 = [MotifValue Rb.A,MotifAnyExcept [Rb.C],MotifOption [Rb.G,Rb.U],MotifAnyExcept [Rb.G]] 
+        in example1MotifQuassi `shouldBe`  expectedMotifForExample1 
+      , testCase "test dnaBase quasiquote " $
+        let example1MotifQuassi = [dnaBaseMotifString|A{C}[GT]{G}|]
+            expectedMotifForExample1 = [MotifValue Db.A,MotifAnyExcept [Db.C],MotifOption [Db.G,Db.T],MotifAnyExcept [Db.G]] 
+        in example1MotifQuassi `shouldBe`  expectedMotifForExample1 
+      ,testCase "test protienWithStop quasiquote " $
         let example1MotifQuassi = [proteinWithStopMotifString|N{P}[ST]{P*}|]
             expectedMotifForExample1 = [MotifValue N,MotifAnyExcept [P],MotifOption [S,T],MotifAnyExcept [P,Stop]] 
         in example1MotifQuassi `shouldBe`  expectedMotifForExample1 

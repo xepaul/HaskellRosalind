@@ -11,7 +11,8 @@ module Rosalind.DnaBase
   ( parseDnaBases,
     DnaBase (..),
     dnaString,
-    dnaBases2String
+    dnaBases2String,
+    dnaBaseMotifString
   )
 where
 import Data.Aeson ( FromJSON, ToJSON )
@@ -26,6 +27,8 @@ import Language.Haskell.TH.Syntax ( Lift )
 import Servant.API (FromHttpApiData (..), ToHttpApiData (toUrlPiece))
 
 import Rosalind.Common (readEitherVerbose, SingleCharForm (..))
+import Rosalind.Motif (makeMotifQuassiQuoter)
+import Data.Data (Proxy(Proxy))
 
 data DnaBase = A | C | G | T 
   deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
@@ -33,7 +36,7 @@ data DnaBase = A | C | G | T
 
 instance SingleCharForm DnaBase where
   singleCharShow = head .show
-  singleCharRead c = read [c]
+  singleCharRead c = readEitherVerbose @_ @DnaBase [c]
   singleChars = enumerate @DnaBase
 
 parseDnaBases :: (Traversable t) => t Char -> Either String (t DnaBase)
@@ -56,6 +59,9 @@ dnaString =
       quoteType = error "quote: Invalid application in type context.",
       quoteDec = error "quote: Invalid application in dec context."
     }
+
+dnaBaseMotifString :: QuasiQuoter
+dnaBaseMotifString = makeMotifQuassiQuoter (Proxy @DnaBase)
 
 instance FromHttpApiData [DnaBase] where
   parseUrlPiece  = mapLeft T.pack . parseDnaBases . T.unpack
