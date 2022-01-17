@@ -116,6 +116,7 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.OrfHedgehogSpec
         Spec.Rosalind.Problems.SubsHedgehogSpec
         Spec.Rosalind.FastaHedgehogSpec
+        Spec.Rosalind.FastqHedgehogSpec
         Spec.Rosalind.MotifHedgehogSpec
         Spec.Rosalind.Problems.FiltHedgehogSpec
     build-depends:     
@@ -146,6 +147,7 @@ test-suite Rosalind-test
       , directory
       , filepath    
       , either
+      , mtl
     ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
               -Wincomplete-patterns             

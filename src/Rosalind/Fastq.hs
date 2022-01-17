@@ -8,12 +8,13 @@
 module Rosalind.Fastq where
 
 import Control.Monad.Except ( when, MonadError, liftEither )
+import Data.Either.Combinators (mapLeft)
+import Data.List.Extra ( chunksOf, enumerate )
 import Data.Text (Text)
 import Data.Text qualified as T
 import Text.Megaparsec
 import Text.Megaparsec.Char ( char, string )
-import Data.List.Extra (enumerate)
-import Data.Either.Combinators (mapLeft)
+import Text.Printf ( printf )
 
 data FastqParsingError = NonMatchingLengths Int Int Int [Char] [Char]
   deriving (Eq, Show, Ord)
@@ -39,12 +40,22 @@ parseFastaQ = do
   where
         dnaLetters =choice $ map char "ACGT"
         fastaqQualityCharsParser = choice $ map char fastaqQualityChars
-        fastaqQualityChars = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+
         anyLetter =  map char $ filter (/= '\n') enumerate
         customFailureWith = customFailure. show
-
+fastaqQualityChars = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 parseFastaq :: (MonadError String m) => String -> m Fastaq
 parseFastaq = liftEither . mapLeft (\x -> "fastq parsingError " <> show x )  . parse parseFastaQ "" . T.pack
 
 parseMultipleFastaq :: (MonadError String m) => String -> m [Fastaq]
 parseMultipleFastaq = liftEither . mapLeft (\x -> "fastq parsingError " <> show x )  . parse ( many parseFastaQ ) "" . T.pack
+
+showFastaq :: Fastaq -> String
+showFastaq Fastaq{fqDescription=fastaId,fqDna=dna,fqQuality=qs } =
+   let dnaLines = chunksOf 60 dna
+       qsLines = chunksOf 60 qs
+   in
+   "@" <> fastaId <> "\n"
+        <> unlines  dnaLines
+        <> "+\n"
+        <>  unlines  qsLines
