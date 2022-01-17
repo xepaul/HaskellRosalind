@@ -5,6 +5,8 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Rosalind.ProteinWithStop
   ( proteinString,
@@ -17,42 +19,69 @@ where
 import Data.Data (Proxy (Proxy))
 import Data.List.Extra (enumerate)
 import Language.Haskell.TH qualified as TH (Exp, Q)
-import Language.Haskell.TH.Quote
+import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax (Lift)
-import Rosalind.Common (SingleCharForm (singleCharRead, singleCharShow, singleChars), readEitherVerbose)
+import Rosalind.Common (SingleCharForm (..))
 import Rosalind.Motif (makeMotifQuassiQuoter)
-import Text.Read (readEither)
+import Control.Monad.Except (MonadError (throwError))
 
-data ProteinWithStop = F | L | I | V | S | P | T | A | Y | M | Stop | H | Q | N | K | D | E | C | W | R | G deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
+data ProteinWithStop = F | L | I | V | S | P | T | A | Y | M | Stop | H | Q | N | K | D | E | C | W | R | G
+  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
 
 instance SingleCharForm ProteinWithStop where
-  singleCharShow = protein2Char
-  singleCharRead = parseProtein
+  singleCharShow = \case
+                F     -> 'F'
+                L     -> 'L'
+                I     -> 'I'
+                V     -> 'V'
+                S     -> 'S'
+                P     -> 'P'
+                T     -> 'T'
+                A     -> 'A'
+                Y     -> 'Y'
+                M     -> 'M'
+                Stop  -> '*'
+                H     -> 'H'
+                Q     -> 'Q'
+                N     -> 'N'
+                K     -> 'K'
+                D     -> 'D'
+                E     -> 'E'
+                C     -> 'C'
+                W     -> 'W'
+                R     -> 'R'
+                G     -> 'G'
+  singleCharRead = \case
+                  'F' -> return F
+                  'L' -> return L
+                  'I' -> return I
+                  'V' -> return V
+                  'S' -> return S
+                  'P' -> return P
+                  'T' -> return T
+                  'A' -> return A
+                  'Y' -> return Y
+                  'M' -> return M
+                  '*' -> return Stop
+                  'H' -> return H
+                  'Q' -> return Q
+                  'N' -> return N
+                  'K' -> return K
+                  'D' -> return D
+                  'E' -> return E
+                  'C' -> return C
+                  'W' -> return W
+                  'R' -> return R
+                  'G' -> return G
+                  a -> throwError $ "Error parsing 'ProteinWithStop' the following is not valid " <> show a
   singleChars = enumerate @ProteinWithStop
 
-parseProtein :: Char -> Either String ProteinWithStop
-parseProtein = readEither @ProteinWithStop . fixStarToStop
-  where
-    fixStarToStop :: Char -> [Char]
-    fixStarToStop c = if '*' == c then "Stop" else [c]
 
 parseProteinString :: (Traversable t) => t Char -> Either String (t ProteinWithStop)
-parseProteinString = traverse ((readEitherVerbose @_ @ProteinWithStop) . fixStarToStop)
-  where
-    fixStarToStop :: Char -> [Char]
-    fixStarToStop c = if '*' == c then "Stop" else [c]
+parseProteinString = traverse singleCharRead
 
-protein2Char :: ProteinWithStop -> Char
-protein2Char = fixStopToStar . show
-  where
-    fixStopToStar :: [Char] -> Char
-    fixStopToStar c = if "Stop" == c then '*' else head c
-
-proteins2String :: [ProteinWithStop] -> String
-proteins2String = map (fixStopToStar . show)
-  where
-    fixStopToStar :: [Char] -> Char
-    fixStopToStar c = if "Stop" == c then '*' else head c
+proteins2String :: (Foldable t) => t ProteinWithStop -> String
+proteins2String = foldMap (\x -> [singleCharShow x] )
 
 makeProtienString :: String -> TH.Q TH.Exp
 makeProtienString name = case parseProteinString name of

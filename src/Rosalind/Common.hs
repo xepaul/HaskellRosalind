@@ -8,7 +8,7 @@ import Control.Monad.Except (MonadError, liftEither)
 
 class SingleCharForm a  where
     singleCharShow :: a -> Char
-    singleCharRead :: Char -> Either String a
+    singleCharRead ::  (MonadError String m) => Char -> m a
     singleChars :: [a]
 
 readEitherVerbose :: ( MonadError String m, Read a ) => String -> m a

@@ -6,6 +6,8 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Rosalind.RnaBase
   ( parseRnaBases,
@@ -15,35 +17,45 @@ module Rosalind.RnaBase
     rnaBaseMotifString
   )
 where
+import Control.Monad.Except (MonadError(throwError))
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Either.Combinators (mapLeft)
 import Data.List.Extra ( enumerate )
 import Data.OpenApi (ToParamSchema,ToSchema)
+import Data.Data (Proxy(Proxy))
+import Data.Text qualified as T
 import GHC.Generics (Generic)
 import Language.Haskell.TH qualified as TH ( Exp, Q )
-import Language.Haskell.TH.Quote ( QuasiQuoter(..) ) 
+import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax ( Lift )
-import Data.Text qualified as T
 import Servant.API (FromHttpApiData (..), ToHttpApiData (toUrlPiece))
 
-import Rosalind.Common (SingleCharForm(..), readEitherVerbose)
+import Rosalind.Common (SingleCharForm(..))
 import Rosalind.Motif (makeMotifQuassiQuoter)
-import Data.Data (Proxy(Proxy))
 
-data RnaBase = A | C | G | U 
-  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
+data RnaBase = A | C | G | U
+  deriving (Show, Eq, Ord, Lift, Enum, Bounded,
             Generic, FromJSON,ToJSON,ToParamSchema,ToSchema)
 
 instance SingleCharForm RnaBase where
-  singleCharShow = head .show
-  singleCharRead c = readEitherVerbose @_ @RnaBase [c]
+  singleCharShow = \case
+                    A -> 'A'
+                    C -> 'C'
+                    G -> 'G'
+                    U -> 'U'
+  singleCharRead = \case
+                  'A' -> return A
+                  'C' -> return C
+                  'G' -> return G
+                  'U' -> return U
+                  v -> throwError $ "invalid RnaBase Char : " <> show v <> "valid characters are " <> (show. map show $ singleChars @RnaBase)
   singleChars = enumerate @RnaBase
 
-parseRnaBases :: (Traversable t) => t Char  -> Either String (t RnaBase)
-parseRnaBases = traverse (readEitherVerbose . (: []))
+parseRnaBases :: (MonadError String m, Traversable t) => t Char  -> m (t RnaBase)
+parseRnaBases = traverse singleCharRead
 
 rnaBases2String ::(Foldable t) =>  t RnaBase -> String
-rnaBases2String = concatMap show 
+rnaBases2String = concatMap show
 
 makeRnaBaseString :: String -> TH.Q TH.Exp
 makeRnaBaseString name = case parseRnaBases name of
@@ -65,5 +77,5 @@ rnaBaseMotifString = makeMotifQuassiQuoter (Proxy @RnaBase)
 instance FromHttpApiData [RnaBase] where
   parseUrlPiece  = mapLeft T.pack . parseRnaBases . T.unpack
 
-instance ToHttpApiData [RnaBase] where  
+instance ToHttpApiData [RnaBase] where
     toUrlPiece = T.pack . rnaBases2String

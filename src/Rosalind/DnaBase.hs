@@ -6,6 +6,11 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Rosalind.DnaBase
   ( parseDnaBases,
@@ -15,7 +20,9 @@ module Rosalind.DnaBase
     dnaBaseMotifString
   )
 where
+import Control.Monad.Except (MonadError(throwError), liftEither)
 import Data.Aeson ( FromJSON, ToJSON )
+import Data.Data (Proxy(Proxy))
 import Data.Either.Combinators (mapLeft)
 import Data.List.Extra ( enumerate )
 import Data.Text qualified as T
@@ -26,21 +33,29 @@ import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax ( Lift )
 import Servant.API (FromHttpApiData (..), ToHttpApiData (toUrlPiece))
 
-import Rosalind.Common (readEitherVerbose, SingleCharForm (..))
+import Rosalind.Common (SingleCharForm (..))
 import Rosalind.Motif (makeMotifQuassiQuoter)
-import Data.Data (Proxy(Proxy))
 
 data DnaBase = A | C | G | T 
-  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
+  deriving (Show, Eq, Ord, Lift, Enum, Bounded,
             Generic, FromJSON,ToJSON,ToParamSchema,ToSchema)
 
 instance SingleCharForm DnaBase where
-  singleCharShow = head .show
-  singleCharRead c = readEitherVerbose @_ @DnaBase [c]
+  singleCharShow =  \case 
+                    A -> 'A'
+                    C -> 'C'
+                    G -> 'G'
+                    T -> 'T'
+  singleCharRead = \case
+                  'A' -> return A  
+                  'C' -> return C  
+                  'G' -> return G  
+                  'T' -> return T
+                  v -> throwError $ "invalid DnaBase Char : " <> show v <> "valid characters are " <> (show. map show $ singleChars @DnaBase)
   singleChars = enumerate @DnaBase
 
-parseDnaBases :: (Traversable t) => t Char -> Either String (t DnaBase)
-parseDnaBases = traverse (readEitherVerbose . (: []))
+parseDnaBases :: (MonadError String m, Traversable t) => t Char  -> m (t DnaBase)
+parseDnaBases = traverse singleCharRead
 
 dnaBases2String :: (Foldable t) =>  t DnaBase -> String
 dnaBases2String = concatMap show
@@ -67,7 +82,10 @@ instance FromHttpApiData [DnaBase] where
   parseUrlPiece  = mapLeft T.pack . parseDnaBases . T.unpack
 
 instance FromHttpApiData DnaBase where
-  parseUrlPiece  =  mapLeft T.pack . readEitherVerbose @_ @DnaBase . T.unpack
+  parseUrlPiece :: T.Text -> Either T.Text DnaBase
+  parseUrlPiece c = case  T.unpack c of
+                    [a]  -> mapLeft T.pack $ liftEither $  singleCharRead @_ a
+                    _ -> throwError "fail" 
 
 instance ToHttpApiData [DnaBase] where  
     toUrlPiece = T.pack . dnaBases2String
