@@ -11,6 +11,7 @@ import Data.List qualified as List
 import Data.List.Extra (enumerate)
 import Data.Text qualified as T
 import Options.Applicative
+import Options.Applicative.Help qualified as H
 import Rosalind.CLI.RouteCommands
 import Rosalind.Problems.Frmt qualified as ProbFrmt
 import Rosalind.Problems.Hamm qualified as ProbHamm
@@ -35,7 +36,7 @@ problemsCommandsParser =
        in command
             name
             ( info
-                (RunProblem <$> (Problem c <$> useExampleDataset <*> outOptionParser))
+                (RunProblem <$> (Problem c <$> inputFileOption <*> outOptionParser))
                 (progDesc $ "Execute problem " <> filter isLetter name)
             )
     outOptionParser =
@@ -46,11 +47,21 @@ problemsCommandsParser =
             <> value "out.txt"
             <> help "Write output to FILE"
         )
-    useExampleDataset :: Parser DatasetOption
-    useExampleDataset = removeBoolBlindness <$> switch (long "example" <> short 'e' <> showDefault <> help "Choose dataset file <problem name>_example.txt")
-      where
-        removeBoolBlindness :: Bool -> DatasetOption
-        removeBoolBlindness b = if b then ExampleDataset else RealDataset
+    inputFileOption :: Parser InputFileOption
+    inputFileOption = exampleInputFile <|> specifiedInputFile
+      where 
+      exampleInputFile :: Parser InputFileOption
+      exampleInputFile = flag' ExampleInputFile  (long "example" <> short 'e' <> style H.bold <> showDefault <> help "Override input FILE option to use the example input for the problem")
+
+      specifiedInputFile :: Parser InputFileOption
+      specifiedInputFile =
+            SpecifiedInputFile <$>
+                      strOption
+                            (long "input"
+                              <> short 'i'
+                              <> metavar "FILE"
+                              <> value "input.txt"
+                              <> help "File input")
 
 getCommandName :: ProblemCommands -> String
 getCommandName = T.unpack . T.toLower . T.pack . show
@@ -65,17 +76,17 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
     go Revc2 = return. mapRight show . ProbRevc.prob
     go Prot = return . ProbProt.prob
     go Tran = return . ProbTran.prob
-    go Frmt = \x -> ProbFrmt.prob x
+    go Frmt = ProbFrmt.prob
     executeCommand f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
       let s = filter isLetter $ getCommandName selectedProblem
           e' = case dataSetOption of
-            ExampleDataset -> "_example"
-            RealDataset -> ""
-          inputFilename = s <> e' <> ".txt"
+            ExampleInputFile -> baseDir </> s<>"_example.txt"
+            SpecifiedInputFile v -> v
+          inputFilename = e'
       putStrLn $ "Dataset option: " <> show dataSetOption
       putStrLn $ "Evaluating " <> s <> " -> " <> inputFilename
-      readFile (baseDir </> inputFilename)
+      readFile inputFilename
         >>= timeIt . f
         >>= ( \r -> do
                 case r of
@@ -90,5 +101,5 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
                     writeFile (baseDir </> outputFilename) x
                   Left v -> do putStrLn $ "Error:" <> v
 
-            )    
+            )
       putStrLn $ "Done -> " <> outputFilename

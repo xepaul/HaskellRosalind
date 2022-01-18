@@ -6,9 +6,11 @@ data Commands
   
 data Problem = Problem
   { probCommand :: ProblemCommands,
-    optDataSetOption :: DatasetOption,
+    optInputFile :: InputFileOption,
     optOutOption :: String
   }
+
+data InputFileOption = ExampleInputFile | SpecifiedInputFile [Char] deriving Show
 
 data ProblemCommands
   = Hamm
