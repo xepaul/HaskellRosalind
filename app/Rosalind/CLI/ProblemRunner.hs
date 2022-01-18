@@ -60,6 +60,7 @@ problemsCommandsParser =
                             (long "input"
                               <> short 'i'
                               <> metavar "FILE"
+                              <> showDefault
                               <> value "input.txt"
                               <> help "File input")
 
