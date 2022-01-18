@@ -1,21 +1,23 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE LambdaCase #-}
 module Rosalind.Problems.Orf where
-import Rosalind.ProteinWithStop (ProteinWithStop)
+import Rosalind.ProteinWithStop (ProteinWithStop, proteins2String)
 import Rosalind.ProteinWithStop qualified as P(ProteinWithStop(..))
-import Rosalind.DnaBase (DnaBase)
+import Rosalind.DnaBase (DnaBase, parseDnaBases)
 import Rosalind.GeneticStringConversion (Dna2Rna(dna2Rna))
 import Rosalind.RnaBase (RnaBase)
 import Rosalind.Problems.Revc (DnaStrandRevComplementer(revComplementStrand))
 
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.List
+import Data.Text qualified as T
+import Data.List ( elemIndex, elemIndices, group, sort )
 import Control.Monad.Except (throwError)
 import Data.Maybe ( fromMaybe )
 import Data.List.Split (chunksOf)
 import Rosalind.Codon2ProteinConv (rdaCodon2ProteinWithStop)
 import Data.Either (rights)
+import Rosalind.Fasta (parseDnaBaseFasta, RosalindFasta (fData))
 orf :: [DnaBase] ->  Set [ProteinWithStop]
 orf sDna = do
   let rna = frames  $ map dna2Rna sDna
@@ -28,7 +30,7 @@ orf sDna = do
     frames s =
       map (\f -> convertToProtein' $ drop f s) [0 .. 2]
     convertToProtein' :: [RnaBase] ->  [ProteinWithStop]
-    convertToProtein' s =  
+    convertToProtein' s =
           fromStartToStop
             $ rnaBasesToProteinDumpPartialCodons s
 
@@ -45,7 +47,7 @@ fromStartToStop s =
         then throwError ()
         else
          Just $ fst $ break (== P.Stop ) $ snd $ break (== P.M) s
-       
+
 rnaBasesToProteinDumpPartialCodons :: [RnaBase] -> [ProteinWithStop ]
 rnaBasesToProteinDumpPartialCodons r = do
         let codons = rights  $ map ensure3RnaBases $ chunksOf 3 r
@@ -56,3 +58,8 @@ rnaBasesToProteinDumpPartialCodons r = do
         ensure3RnaBases = \case
                           [a,b,c] -> Right (a,b,c)
                           otherwise -> Left "partial codon"
+
+
+prob :: String -> Either String String
+prob s = unlines . map proteins2String . Set.toList . orf. fData
+         <$> parseDnaBaseFasta (T.pack s)

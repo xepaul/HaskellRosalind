@@ -10,6 +10,7 @@ module Rosalind.Fasta
         , showRosalindFasta
         , parseManyCharFastas
         , parseManyCharFastas'
+        , parseDnaBaseFasta
     )
 where
 
@@ -52,6 +53,9 @@ dnabaseStringLineParser = do
     case parseDnaBases d' of
         Left s -> customFailure $ "not dna bases " <> s
         Right ds  -> return ds
+
+parseDnaBaseFasta :: Text -> Either String (RosalindFasta [DnaBase])
+parseDnaBaseFasta =  mapLeft show <$> runParser (fastaParser dnabaseStringLineParser) ""
 
 fastaParser :: ParserB [a ] -> ParserB (RosalindFasta [a])
 fastaParser p = do

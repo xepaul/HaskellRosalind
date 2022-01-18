@@ -37,3 +37,6 @@ instance DnaComplementer DnaBase where
 
 instance DnaComplementer (RChar 'Dna) where
   complement = complementDna
+
+instance DnaComplementer [DnaBase] where
+  complement = map complement

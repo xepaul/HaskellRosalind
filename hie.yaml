@@ -9,10 +9,10 @@ cradle:
     - path: "app/CLI.hs"
       component: "Rosalind:exe:rosalind-cli"
 
-    - path: "app/Rosalind/CLI/ProblemRunner.hs"
+    - path: "app/Rosalind/CLI/RouteCommands.hs"
       component: "Rosalind:exe:rosalind-cli"
 
-    - path: "app/Rosalind/CLI/RouteCommands.hs"
+    - path: "app/Rosalind/CLI/ProblemRunner.hs"
       component: "Rosalind:exe:rosalind-cli"
 
     - path: "app/Rosalind/CLI/ProblemRunnerParser.hs"

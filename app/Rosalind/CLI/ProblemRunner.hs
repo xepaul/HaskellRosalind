@@ -15,6 +15,7 @@ import Rosalind.Problems.Prot qualified as ProbProt
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
 import Rosalind.Problems.Tran qualified as ProbTran
+import Rosalind.Problems.Orf qualified as ProbOrf
 import System.Directory (getCurrentDirectory)
 import System.FilePath.Posix ((</>))
 import System.TimeIt (timeIt)
@@ -29,6 +30,7 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
     go Revc2 = return. mapRight show . ProbRevc.prob
     go Prot = return . ProbProt.prob
     go Tran = return . ProbTran.prob
+    go Orf = return . ProbOrf.prob
     go Frmt = ProbFrmt.prob
     executeCommand f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
