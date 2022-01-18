@@ -4,9 +4,11 @@
 module CLI where
 
 import Options.Applicative
-import Rosalind.CLI.ProblemRunner
 import Rosalind.CLI.RouteCommands ( Commands(..) )
+import Rosalind.CLI.ProblemRunner
+import Rosalind.CLI.ProblemRunnerParser
 import Rosalind.Server.App qualified as Rs (runServer)
+
 
 commandsParser :: Parser Commands
 commandsParser =
