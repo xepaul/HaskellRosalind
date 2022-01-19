@@ -5,7 +5,13 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# language LambdaCase #-}
-module Rosalind.Problems.Revc where
+module Rosalind.Problems.Revc 
+(
+   DnaStrandRevComplementer(..),
+   Reverse(..),
+   revc,
+   prob
+) where
 
 import Data.List qualified as List
 import Rosalind.DnaBase (parseDnaBases,dnaBases2String)

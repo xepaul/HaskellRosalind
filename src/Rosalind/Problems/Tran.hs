@@ -7,7 +7,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Rosalind.Problems.Tran where
+module Rosalind.Problems.Tran 
+  (
+    prob,
+    trans
+  )
+where
 
 import Control.Lens
 import Control.Monad.State (MonadState (), execState)
@@ -33,6 +38,8 @@ data Stats = Stats
 
 makeLenses ''Stats
 
+-- | Process the Problem Transitions and Transversions
+-- https://rosalind.info/problems/tran/
 prob :: String -> Either String String
 prob s =  do
          (RosalindFasta _ a,RosalindFasta _ b) <- parseTwoDnaBaseFastas $  T.pack s         

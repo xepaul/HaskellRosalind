@@ -36,9 +36,9 @@ test_tests =
       testProperty "check hamm mutations in every base has mutation count of length " prop3
       ,testCase "hamm file " $ do
             content <- readDataset "hamm"
-            Hamm.findSubsAndPrintFromInput  content `shouldBe`  Right 7
+            Hamm.prob  content `shouldBe`  Right 7
       ,testCase "hamm file expected " $ do
-            testExampleDatasetMatchesExpected Example1 "hamm"  (mapRight show <$> Hamm.findSubsAndPrintFromInput)
+            testExampleDatasetMatchesExpected Example1 "hamm"  (mapRight show <$> Hamm.prob)
     ]
 
 genDna :: Gen [DnaBase ]
