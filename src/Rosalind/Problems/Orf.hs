@@ -18,20 +18,19 @@ import Data.Text qualified as T
 import Rosalind.Codon2ProteinConv (rnaCodon2ProteinWithStop)
 import Rosalind.DnaBase (DnaBase, dnaBases2String)
 import Rosalind.Fasta (RosalindFasta (fData), parseDnaBaseFasta)
-import Rosalind.GeneticStringConversion (Dna2Rna (dna2Rna))
+import Rosalind.GeneticStringConversion (DnaStrandToRna (dnaStrandToRna))
 import Rosalind.Problems.Revc (DnaStrandRevComplementer (revComplementStrand))
 import Rosalind.ProteinWithStop (ProteinWithStop, proteins2String)
 import Rosalind.ProteinWithStop qualified as P (ProteinWithStop (..))
 import Rosalind.RnaBase (RnaBase)
 import Data.Maybe (mapMaybe)
 
-
 orf :: [DnaBase] -> Set [ProteinWithStop]
 orf sDna = do
   Set.fromList $
     filter (not . null) $
       concatMap
-        (findProteins . dna2Rna)
+        (findProteins . dnaStrandToRna)
         [sDna, revComplementStrand sDna]
   where
     findProteins :: [RnaBase] -> [[ProteinWithStop]]
