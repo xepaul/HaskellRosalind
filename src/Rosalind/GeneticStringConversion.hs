@@ -21,6 +21,9 @@ class DnaStrandRevComplementer a  where
 class DnaStrandToRna a b |a -> b  where
      dnaStrandToRna :: a -> b
 
+class DnaStrandComplementer a where
+     dnaStrandComplementer :: a -> a
+
 class Reverse f where
    reverseIt :: f a -> f a
 
@@ -37,8 +40,8 @@ instance Dna2Rna DnaBase RnaBase where
                 D.G -> R.G
                 D.T -> R.U
 
-instance Dna2Rna [DnaBase] [RnaBase] where
-    dna2Rna = map dna2Rna
+-- instance Dna2Rna [DnaBase] [RnaBase] where
+--     dna2Rna = map dna2Rna
 
 instance Dna2Rna (RChar 'Dna)  (RChar 'Rna) where  dna2Rna = RS.dnaToRna
 
@@ -52,13 +55,14 @@ instance DnaComplementer DnaBase where
 instance DnaComplementer (RChar 'Dna) where
   complement = complementDna
 
-instance DnaComplementer [DnaBase] where
-  complement = map complement
 
 instance ( Functor f, Dna2Rna a b) => DnaStrandToRna (f a) (f b)  where
      dnaStrandToRna = fmap dna2Rna
 
 instance (Reverse f, Functor f, DnaComplementer a) => DnaStrandRevComplementer (f a)  where
-     revComplementStrand a = complement <$> reverseIt a
+     revComplementStrand = dnaStrandComplementer . reverseIt 
+
+instance (Functor f, DnaComplementer a) => DnaStrandComplementer (f a)  where
+     dnaStrandComplementer = fmap complement 
 
 instance Reverse [] where reverseIt = List.reverse
