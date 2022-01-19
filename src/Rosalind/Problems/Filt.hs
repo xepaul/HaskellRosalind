@@ -1,5 +1,10 @@
 {-# LANGUAGE FlexibleContexts #-}
-module Rosalind.Problems.Filt where
+module Rosalind.Problems.Filt 
+(
+     prob
+    ,countQualityFastas
+)
+where
 
 import Rosalind.Fastq (Fastaq (fqQuality))
 import GHC.Float (int2Double)
