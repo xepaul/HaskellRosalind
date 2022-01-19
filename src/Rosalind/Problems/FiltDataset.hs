@@ -5,7 +5,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Rosalind.Problems.FiltDataset where
+module Rosalind.Problems.FiltDataset
+  ( FiltDataset (..),
+    parseDataset,
+  )
+where
 
 import Control.Monad.Except (MonadError, liftEither)
 import Data.Either.Combinators (mapLeft)

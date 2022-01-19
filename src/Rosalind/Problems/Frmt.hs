@@ -1,4 +1,8 @@
-module Rosalind.Problems.Frmt where
+module Rosalind.Problems.Frmt 
+(
+  prob
+
+) where
 
 import Control.Monad.Except ( MonadIO(..), runExceptT )
 import Data.Function (on)

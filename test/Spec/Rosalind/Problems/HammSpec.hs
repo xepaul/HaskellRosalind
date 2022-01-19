@@ -23,7 +23,7 @@ unitTests =
   testGroup
     "Unit tests Rosalind hamm"
     [ 
-        testCase "hamm " $ Hamm.findSubsAndPrintFromInput "GAGCCTACTAACGGGAT\nCATCGTAATGACGGCCT" `shouldBe`  Right 7
+        testCase "hamm " $ Hamm.prob "GAGCCTACTAACGGGAT\nCATCGTAATGACGGCCT" `shouldBe`  Right 7
         ,QC.testProperty "check hamm with given mutations" prop1
     ]
 

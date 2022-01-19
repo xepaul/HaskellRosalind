@@ -5,8 +5,7 @@ module Rosalind.Problems.Prot
      convertToProtein
    , convertRnaBasesToProtein
    , prob                        
-      )
-where
+  ) where
 
 import Data.List.Split (chunksOf)
 import Rosalind.Codon2ProteinConv ( rnaCodon2ProteinWithStop )

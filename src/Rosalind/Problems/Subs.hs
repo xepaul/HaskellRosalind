@@ -1,5 +1,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-module Rosalind.Problems.Subs where
+module Rosalind.Problems.Subs
+(
+  findSubs
+) where
 
 findSubs :: (Ord a) => [a] -> [a] -> [Int]
 findSubs s t =

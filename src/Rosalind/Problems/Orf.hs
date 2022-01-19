@@ -2,9 +2,14 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Rosalind.Problems.Orf where
+module Rosalind.Problems.Orf 
+(
+  checkDataset,
+  orf,
+  prob
+)
+where
 
-import Data.Either (rights)
 import Data.List (elemIndex)
 import Data.List.Split (chunksOf)
 import Data.Set (Set)

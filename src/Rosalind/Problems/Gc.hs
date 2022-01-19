@@ -1,6 +1,10 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Rosalind.Problems.Gc where
+module Rosalind.Problems.Gc 
+(
+  prob,
+  calcDnaBaseGcContent
+)  where
 
 import Data.Function (on)
 import Data.List ( maximumBy)

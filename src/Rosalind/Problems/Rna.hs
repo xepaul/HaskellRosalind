@@ -1,7 +1,12 @@
 {-# language LambdaCase #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ImportQualifiedPost #-}
-module Rosalind.Problems.Rna where
+module Rosalind.Problems.Rna
+(
+    dnaBasesToRna,
+    dnaStringToRna,
+    prob
+) where
     
 import Rosalind.DnaBase qualified as DB (DnaBase(..))
 

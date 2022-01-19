@@ -25,7 +25,7 @@ executeProblem :: Problem -> IO ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) =
   executeCommand $ go selectedProblem
   where
-    go Hamm = return . mapRight show . ProbHamm.findSubsAndPrintFromInput
+    go Hamm = return . mapRight show . ProbHamm.prob
     go Revc = return .ProbRevc.prob
     go Rna  = return . ProbRna.prob
     go Revc2 = return. mapRight show . ProbRevc.prob
