@@ -206,6 +206,7 @@ library rosalind-server
     , extra
     , servant-openapi3
     , openapi3
+    , wai-logger
   default-language: Haskell2010
   ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
