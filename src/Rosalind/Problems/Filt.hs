@@ -7,7 +7,9 @@ import Data.Char (ord)
 import Rosalind.Problems.FiltDataset
     ( FiltDataset(FiltDataset), parseDataset )
 import Rosalind.Common (count)
+import Control.Monad.Except (MonadError)
 
+prob :: MonadError String m => String -> m Int
 prob s = do
   ds <- parseDataset s
   return $ countQualityFastas ds
