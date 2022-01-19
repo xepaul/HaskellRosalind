@@ -26,6 +26,9 @@ instance Dna2Rna DnaBase RnaBase where
                 D.G -> R.G
                 D.T -> R.U
 
+instance Dna2Rna [DnaBase] [RnaBase] where
+    dna2Rna = map dna2Rna
+    
 instance Dna2Rna (RChar 'Dna)  (RChar 'Rna) where  dna2Rna = RS.dnaToRna
 
 instance DnaComplementer DnaBase where
