@@ -8,7 +8,7 @@ module Rosalind.Problems.Prot
 where
 
 import Data.List.Split (chunksOf)
-import Rosalind.Codon2ProteinConv ( rdaCodon2ProteinWithStop )
+import Rosalind.Codon2ProteinConv ( rnaCodon2ProteinWithStop )
 import Rosalind.RnaBase ( RnaBase, parseRnaBases )
 import Rosalind.ProteinWithStop
     ( proteins2String, ProteinWithStop(Stop) )
@@ -24,7 +24,7 @@ convertToProtein x =
 convertRnaBasesToProtein :: [RnaBase] -> Either [Char] [ProteinWithStop ]
 convertRnaBasesToProtein r = do
         codons <- traverse ensure3RnaBases $ chunksOf 3 r
-        return $  takeWhile (/= Stop) $ map rdaCodon2ProteinWithStop codons
+        return $  takeWhile (/= Stop) $ map rnaCodon2ProteinWithStop codons
 
 
   where ensure3RnaBases :: [a] -> Either String (a,a,a)
