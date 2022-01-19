@@ -2,31 +2,68 @@
 
 [Rosalind Problems Information](https://rosalind.info/problems/list-view/)
 
-Command line runner [RosalindProblemRunner.hs](app/RosalindProblemRunner.hs)
+Rosalind Command Line [CLI.hs](app/CLI.hs)
 
 Run with
 ```
-❯ cabal run RosalindCommandExecuter -- --help
+❯ cabal run rosalind-cli -- --help
 ```
 ```
 Up to date
 Rosalind Problem runner
 
-Usage: RosalindCommandExecuter COMMAND [-e|--example]
+Usage: rosalind-cli (COMMAND | COMMAND)
   Runs Rosalind problems on a given dataset file Dataset/<problem name>.txt
 
 Available options:
-  -e,--example             Choose dataset file <problem name>_example.txt
   -h,--help                Show this help text
 
 Available commands:
+  run                      run server
+
+Problem commands:
   hamm                     Execute problem hamm
   rna                      Execute problem rna
   revc                     Execute problem revc
   revc2                    Execute problem revc
   prot                     Execute problem prot
   tran                     Execute problem tran
+  frmt                     Execute problem frmt
+  orf                      Execute problem orf
 ```
+An example help for a  problem command
+
+```
+❯ cabal run rosalind-cli -- --help hamm
+```
+```
+Up to date
+Usage: rosalind-cli hamm [(-e|--example) | (-i|--input FILE)] [-o|--output FILE]
+  Execute problem hamm
+
+Available options:
+  -e,--example             Override input FILE option to use the example input
+                           for the problem
+  -i,--input FILE          File input (default: "input.txt")
+  -o,--output FILE         Write output to FILE
+```
+
+An example of running a problem.
+
+```
+❯ cabal run rosalind-cli -- hamm
+```
+```
+Up to date
+Dataset option: SpecifiedInputFile "input.txt"
+Evaluating hamm -> input.txt
+CPU time:   0.00s
+Result:
+466
+Done -> out.txt
+```
+
+
 
 # Tests
 Run with 
