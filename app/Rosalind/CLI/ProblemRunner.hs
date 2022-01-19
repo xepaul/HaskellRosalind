@@ -36,13 +36,16 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
     executeCommand f = do
       baseDir <- getCurrentDirectory <&> (</> "Data")
       let s = filter isLetter $ getCommandName selectedProblem
-          e' = case dataSetOption of
+          inputFilePath = case dataSetOption of
             ExampleInputFile -> baseDir </> s<>"_example.txt"
             SpecifiedInputFile v -> v
-          inputFilename = e'
+          displayFilePath = case dataSetOption of
+            ExampleInputFile -> "Data" </> s<>"_example.txt"
+            SpecifiedInputFile v -> v
+          inputFilename = inputFilePath
       putStrLn $ "Dataset option: " <> show dataSetOption
       
-      putStrLn $ "Evaluating " <> s <> " -> " <> inputFilename
+      putStrLn $ "Evaluating " <> s <> " -> " <> displayFilePath
       readFile inputFilename
         >>= (\c ->do checkDataSetInput selectedProblem c
                      return c)
