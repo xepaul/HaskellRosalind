@@ -27,6 +27,23 @@ Available commands:
   prot                     Execute problem prot
   tran                     Execute problem tran
 ```
+An example running the server
+
+```
+❯ cabal run rosalind-cli -- run
+```
+```
+Up to date
+runserver
+Listening on port 8081
+Converted AAGCT to AGCTT
+127.0.0.1 - - [19/Jan/2022:16:13:42 +0000] "GET /revc/AAGCT HTTP/1.1" 200 - 
+```
+```
+❯ curl http://localhost:8081/revc/AAGCT
+"AGCTT"% 
+```
+
 
 # Tests
 Run with 

@@ -19,9 +19,10 @@ import Rosalind.DnaBase (DnaBase)
 import Rosalind.Problems.Rna qualified as Rna
 import Rosalind.Problems.Revc qualified as Revc
 import Rosalind.RnaBase (RnaBase)
+import Control.Monad.IO.Class (liftIO)
 
 type Dna2RnaString = "rna" :> Capture "dna" String :> Get '[JSON] String
-type RevcString = "rev" :> Capture "dna" String :> Get '[JSON] String
+type RevcString = "revc" :> Capture "dna" String :> Get '[JSON] String
 type Dna2Rna =  "rna2" :> Capture "dnaT" [DnaBase] :> Get '[JSON] [RnaBase]
 type Revc ="revc2" :> Capture "dnaT" [DnaBase] :> Get '[JSON] [DnaBase]
 type RosalindApi =
@@ -43,8 +44,12 @@ rosalindServer =    calcStringRna
     calcStringRevc :: String -> Handler String
     calcStringRevc a = do
         case Revc.prob a of
-          Left _ -> throwError custom404Err
-          Right v -> return  v
+          Left v -> do
+                    liftIO $ putStrLn $ "Error: " ++ v
+                    throwError custom404Err
+          Right v -> do
+                     liftIO $ putStrLn $ "Converted " <> a <> " to " <> v
+                     return  v
         where   custom404Err  = err404 { errBody = "Bad dna"}
     calcRevc :: [DnaBase] -> Handler [DnaBase]
     calcRevc = return . Revc.revc 
