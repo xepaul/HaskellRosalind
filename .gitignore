@@ -19,3 +19,6 @@ cabal.sandbox.config
 .stack-work/
 .HTF/
 .ghc.environment.*
+input.txt
+/.data/out.txt
+out.txt
