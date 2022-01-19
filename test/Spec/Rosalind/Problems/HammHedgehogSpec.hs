@@ -19,9 +19,12 @@ import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Hspec (shouldBe)
 import Test.Tasty.Hedgehog 
-import Rosalind.DnaBase
+import Rosalind.DnaBase ( dnaString, DnaBase(..) )
 
 import Spec.Rosalind.Common
+    ( testExampleDatasetMatchesExpected,
+      readDataset,
+      ExampleNumber(Example1) )
 
 test_tests :: TestTree
 test_tests =
@@ -35,7 +38,7 @@ test_tests =
             content <- readDataset "hamm"
             Hamm.findSubsAndPrintFromInput  content `shouldBe`  Right 7
       ,testCase "hamm file expected " $ do
-            testExampleDatasetMatchesExpected "hamm"  (mapRight show <$> Hamm.findSubsAndPrintFromInput)
+            testExampleDatasetMatchesExpected Example1 "hamm"  (mapRight show <$> Hamm.findSubsAndPrintFromInput)
     ]
 
 genDna :: Gen [DnaBase ]

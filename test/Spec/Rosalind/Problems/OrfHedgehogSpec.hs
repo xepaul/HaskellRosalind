@@ -11,9 +11,12 @@ import Data.Set qualified as Set
 import Hedgehog
 import Rosalind.Problems.Orf qualified as Orf
 import Test.Tasty
-import Test.Tasty.Hedgehog 
+
+import Test.Tasty.HUnit
+import Test.Tasty.Hedgehog
 import Rosalind.DnaBase (dnaString)
 import Rosalind.ProteinWithStop ( proteinString )
+import Spec.Rosalind.Common (testExampleDatasetMatchesExpected, ExampleNumber (..))
 
 
 test_tests :: TestTree
@@ -21,6 +24,8 @@ test_tests =
   testGroup
     "Unit tests Rosalind Orf (Hedgehog)"
     [ testProperty "check sample result" prop0
+      ,testCase "hamm file expected " $ do
+            testExampleDatasetMatchesExpected Example2  "orf"  Orf.prob
     ]
 
 prop0 :: Property

@@ -1,6 +1,7 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE DeriveFunctor #-}
 module Rosalind.Fasta
     (
         parseDnaCharFasta
@@ -29,7 +30,7 @@ data RosalindFasta a = RosalindFasta {
                                       fDescripton :: String
                                     , fData :: a
                                     }
-                         deriving (Show,Eq,Ord)
+                         deriving (Show,Eq,Ord,Functor)
 
 type ParserB = Parsec String Text
 

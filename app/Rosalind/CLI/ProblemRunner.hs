@@ -1,5 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Rosalind.CLI.ProblemRunner where
 
@@ -40,21 +41,32 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
             SpecifiedInputFile v -> v
           inputFilename = e'
       putStrLn $ "Dataset option: " <> show dataSetOption
+      
       putStrLn $ "Evaluating " <> s <> " -> " <> inputFilename
       readFile inputFilename
+        >>= (\c ->do checkDataSetInput selectedProblem c
+                     return c)
         >>= timeIt . f
         >>= ( \r -> do
                 case r of
                   Right x-> do
                     putStrLn "Result:"
-                    if List.length x > 1000
+                    if List.length x > 10000
                       then do
-                        putStrLn $ List.take 1000 x
+                        putStrLn $ List.take 10000 x
                         putStrLn "..."
                       else
-                        putStrLn $ List.take 1000 x
+                        putStrLn $ List.take 10000 x
                     writeFile (baseDir </> outputFilename) x
                   Left v -> do putStrLn $ "Error:" <> v
 
             )
       putStrLn $ "Done -> " <> outputFilename
+    checkDataSetInput :: ProblemCommands -> String -> IO ()
+    checkDataSetInput p content = case p of 
+                          Orf -> do printDataset $ ProbOrf.checkDataset content
+                          _ -> return ()
+    printDataset :: (Show a) => Either String a -> IO ()
+    printDataset = \case
+                    Left v -> do putStrLn $ "Failed :" <> v
+                    Right v -> do putStrLn $ "Valid Dataset :\n" <> show v

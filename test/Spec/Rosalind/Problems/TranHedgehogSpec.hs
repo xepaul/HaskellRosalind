@@ -31,7 +31,7 @@ test_tests =
     "Unit tests Rosalind Rna Hedgehog"
     [ H.testProperty "check sample result" prop0
     ,testCase "tran file expected " $ do
-            testExampleDatasetMatchesExpected "tran"   Tran.prob
+            testExampleDatasetMatchesExpected Example1 "tran"   Tran.prob
     
     ]
 
