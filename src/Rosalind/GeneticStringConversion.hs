@@ -1,9 +1,10 @@
-{-# LANGUAGE MultiParamTypeClasses #-}
+
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE LambdaCase #-}
+
+{-# LANGUAGE UndecidableInstances #-}
 module Rosalind.GeneticStringConversion where
 
 import Rosalind.DnaBase qualified as D (DnaBase(..))
@@ -12,6 +13,16 @@ import Rosalind.DnaBase (DnaBase())
 import Rosalind.RnaBase (RnaBase())
 import Rosalind.RosalindStrings qualified as RS
 import Rosalind.RosalindStrings hiding (dnaToRna)
+import qualified Data.List as List
+
+class DnaStrandRevComplementer a  where
+     revComplementStrand :: a -> a
+
+class DnaStrandToRna a b |a -> b  where
+     dnaStrandToRna :: a -> b
+
+class Reverse f where
+   reverseIt :: f a -> f a
 
 class Dna2Rna a b | a -> b where
     dna2Rna :: a -> b
@@ -28,7 +39,7 @@ instance Dna2Rna DnaBase RnaBase where
 
 instance Dna2Rna [DnaBase] [RnaBase] where
     dna2Rna = map dna2Rna
-    
+
 instance Dna2Rna (RChar 'Dna)  (RChar 'Rna) where  dna2Rna = RS.dnaToRna
 
 instance DnaComplementer DnaBase where
@@ -43,3 +54,11 @@ instance DnaComplementer (RChar 'Dna) where
 
 instance DnaComplementer [DnaBase] where
   complement = map complement
+
+instance ( Functor f, Dna2Rna a b) => DnaStrandToRna (f a) (f b)  where
+     dnaStrandToRna = fmap dna2Rna
+
+instance (Reverse f, Functor f, DnaComplementer a) => DnaStrandRevComplementer (f a)  where
+     revComplementStrand a = complement <$> reverseIt a
+
+instance Reverse [] where reverseIt = List.reverse
