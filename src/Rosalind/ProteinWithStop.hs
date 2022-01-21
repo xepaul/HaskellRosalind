@@ -7,6 +7,8 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Rosalind.ProteinWithStop
   ( proteinString,
@@ -15,18 +17,22 @@ module Rosalind.ProteinWithStop
     proteinWithStopMotifString,
   )
 where
-
+import Data.Aeson (FromJSON, ToJSON)
 import Data.Data (Proxy (Proxy))
 import Data.List.Extra (enumerate)
+import Data.OpenApi (ToParamSchema,ToSchema)
 import Language.Haskell.TH qualified as TH (Exp, Q)
 import Language.Haskell.TH.Quote ( QuasiQuoter(..) )
 import Language.Haskell.TH.Syntax (Lift)
 import Rosalind.Common (SingleCharForm (..))
 import Rosalind.Motif (makeMotifQuassiQuoter)
 import Control.Monad.Except (MonadError (throwError))
+import GHC.Generics (Generic)
+
 
 data ProteinWithStop = F | L | I | V | S | P | T | A | Y | M | Stop | H | Q | N | K | D | E | C | W | R | G
-  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded)
+  deriving (Show, Eq, Ord, Read, Lift, Enum, Bounded,
+            Generic, FromJSON,ToJSON,ToParamSchema,ToSchema)
 
 instance SingleCharForm ProteinWithStop where
   singleCharShow = \case
