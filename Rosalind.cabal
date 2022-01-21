@@ -276,3 +276,44 @@ test-suite rosalind-server-test
               -Wincomplete-uni-patterns 
               -Wincomplete-record-updates 
               -Wmissing-fields    
+
+executable rosalind-generator
+  import: base
+  import: deps
+  main-is: GeneratorCLI.hs
+  ghc-options:  -main-is GeneratorCLI
+  other-modules:   
+    PurescriptGenerator
+  hs-source-dirs: generators/  
+  ghc-options: 
+  build-depends:
+      base >=4.7 && <5
+    , Rosalind-lib
+    , optparse-applicative
+    , text
+    , timeit
+    , directory
+    , filepath
+    , warp
+    , rosalind-server
+    , extra
+    , lens -any
+    , purescript-bridge -any
+    , servant -any
+    , servant-purescript
+    , servant-server -any
+    , text -any
+    , aeson
+    , servant-foreign
+    , containers
+  default-language: Haskell2010
+  ghc-options:  -Wall  
+                -fno-warn-incomplete-uni-patterns
+                -Wincomplete-patterns             
+                -Wincomplete-uni-patterns 
+                -Wincomplete-record-updates 
+                -Wmissing-fields    
+                -Wall -Werror -Wcompat 
+                -Widentities -Wincomplete-uni-patterns 
+                -Wincomplete-record-updates 
+                -Wno-unused-top-binds -Wno-orphans
