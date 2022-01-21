@@ -1,14 +1,10 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-module GeneratorCLI (main) where
-import Options.Applicative
-import PurescriptGenerator (generatePurescript)
+module Rosalind.GeneratorCLI.GeneratorCLI (cli) where
 
-parseOptions :: IO FilePath
-parseOptions = customExecParser
+import Options.Applicative
+import Rosalind.GeneratorCLI.PurescriptGenerator (generatePurescript)
+
+generatorParser :: IO FilePath
+generatorParser = customExecParser
     (prefs $ showHelpOnEmpty <> showHelpOnError)
     (info (helper <*> psGenOutputDirParser)
             ( fullDesc
@@ -23,9 +19,9 @@ parseOptions = customExecParser
             metavar "OUTPUT_DIR" <>
             help "Output directory to write the generated purescript files into.")
 
-main :: IO ()
-main = do
-    psGenOutputDir <- parseOptions
+cli :: IO ()
+cli = do
+    psGenOutputDir <- generatorParser
     putStrLn $ "Generating api code and types in purescript" <> psGenOutputDir
     generatePurescript psGenOutputDir
     putStrLn "Completed."

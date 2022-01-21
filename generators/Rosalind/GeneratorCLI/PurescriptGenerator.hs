@@ -1,13 +1,11 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE TypeOperators #-}
 
-module PurescriptGenerator (generatePurescript) where
+module Rosalind.GeneratorCLI.PurescriptGenerator (generatePurescript) where
 
 import Control.Applicative
 import Control.Lens
@@ -19,10 +17,12 @@ import Rosalind.DnaBase (DnaBase)
 import Rosalind.RnaBase (RnaBase)
 import Rosalind.ProteinWithStop (ProteinWithStop)
 import Rosalind.Server.Api (RosalindApi)
+import Rosalind.Fasta (RosalindFasta)
+import Language.PureScript.Bridge.TypeParameters (A)
 
 generatePurescript :: FilePath -> IO ()
 generatePurescript outputPath = do
-  writePSTypes outputPath (buildBridge myBridge) myTypes
+  writePSTypesWith genLenses outputPath (buildBridge myBridge) myTypes
   writeAPIModuleWithSettings generateSettings outputPath myBridgeProxy (Proxy :: Proxy RosalindApi)
   where
     generateSettings :: Settings
@@ -31,11 +31,11 @@ generatePurescript outputPath = do
 
 myTypes :: [SumType 'Haskell]
 myTypes =
-  [ 
-    argonaut $ mkSumType @DnaBase
-    , argonaut $ mkSumType @RnaBase
-    , argonaut $ mkSumType @ProteinWithStop
-    
+  [
+    equal . genericShow . argonaut $ mkSumType @DnaBase
+    , equal . genericShow . argonaut $ mkSumType @RnaBase
+    , equal . genericShow . argonaut $ mkSumType @ProteinWithStop
+    , equal . genericShow . argonaut $ mkSumType @(RosalindFasta A)
   ]
 
 moduleTranslator :: BridgePart

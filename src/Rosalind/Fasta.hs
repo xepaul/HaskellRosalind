@@ -2,6 +2,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE DataKinds            #-}
+{-# LANGUAGE DeriveAnyClass       #-}
+{-# LANGUAGE DeriveGeneric        #-}
+{-# LANGUAGE DerivingVia          #-}
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE NamedFieldPuns       #-}
+{-# LANGUAGE OverloadedStrings    #-}
+{-# LANGUAGE StrictData           #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
 module Rosalind.Fasta
     (
         parseDnaCharFasta
@@ -25,12 +40,20 @@ import Text.Printf ( printf )
 import Rosalind.DnaBase ( DnaBase(..), parseDnaBases )
 import Control.Monad.Except (MonadError, liftEither)
 import Rosalind.Common (singleCharShow, SingleCharForm)
+import GHC.Generics (Generic)
+import Data.OpenApi.Schema qualified as OpenApi
+import Data.Aeson (FromJSON, ToJSON)
 
 data RosalindFasta a = RosalindFasta {
                                       fDescripton :: String
                                     , fData :: a
                                     }
-                         deriving (Show,Eq,Ord,Functor)
+                        -- deriving (Show,Eq,Ord,Functor)
+
+    deriving stock (Generic, Eq, Show,Functor)
+    deriving anyclass (ToJSON, FromJSON)
+
+deriving instance OpenApi.ToSchema t => OpenApi.ToSchema (RosalindFasta t)
 
 type ParserB = Parsec String Text
 

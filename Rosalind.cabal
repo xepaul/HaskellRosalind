@@ -280,15 +280,15 @@ test-suite rosalind-server-test
 executable rosalind-generator
   import: base
   import: deps
-  main-is: GeneratorCLI.hs
-  ghc-options:  -main-is GeneratorCLI
+  main-is: Main.hs
+  ghc-options:  -main-is Main
   other-modules:   
-    PurescriptGenerator
+    Rosalind.GeneratorCLI.GeneratorCLI
+    Rosalind.GeneratorCLI.PurescriptGenerator
   hs-source-dirs: generators/  
   ghc-options: 
   build-depends:
-      base >=4.7 && <5
-    , Rosalind-lib
+      Rosalind-lib
     , optparse-applicative
     , text
     , timeit
