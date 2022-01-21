@@ -1,10 +1,16 @@
-cabal-version:      2.4
+cabal-version:      3.0
 name:               Rosalind
 version:            0.1.0.0
 synopsis:
 
+
+
 extra-source-files:
     README.md
+
+
+common base
+  build-depends:       base >=4.14 && <4.15
 
 common deps
   ghc-options:  -Wall                
@@ -24,6 +30,7 @@ common deps
                 -Wredundant-record-wildcards
                 -- -Wunused-packages
 library Rosalind-lib
+  import: base
   import: deps
   exposed-modules:  
                       Rosalind.Problems.Rna
@@ -48,9 +55,7 @@ library Rosalind-lib
                       Rosalind.ProteinWithStop
                       Rosalind.RosalindStrings                                                                                       
                       Rosalind.Services.Entrez                      
-  build-depends:    base ^>=4.14.1.0
-                      , containers
-                      , extra
+  build-depends:      containers
                       , lens
                       , mtl
                       , text
@@ -89,13 +94,13 @@ library Rosalind-lib
                       , generic-monoid    
                       , servant-openapi3
                       , openapi3    
-                      , servant                   
+                      , servant
+                      , extra                   
   hs-source-dirs:   src/
   default-language: Haskell2010
 
-
-
 test-suite Rosalind-test
+    import: base
     import: deps
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
@@ -120,8 +125,7 @@ test-suite Rosalind-test
         Spec.Rosalind.MotifHedgehogSpec
         Spec.Rosalind.Problems.FiltHedgehogSpec
     build-depends:     
-        base ^>=4.14.1.0
-      , Rosalind-lib
+        Rosalind-lib
       , tasty                  
       , tasty-expected-failure
       , hedgehog               
@@ -134,7 +138,6 @@ test-suite Rosalind-test
       , lens
       , lens-aeson
       , containers
-      , extra
       , parsec
       , split
       , QuickCheck
@@ -148,6 +151,7 @@ test-suite Rosalind-test
       , filepath    
       , either
       , mtl
+      , extra
     ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
               -Wincomplete-patterns             
@@ -157,6 +161,7 @@ test-suite Rosalind-test
 
 
 executable rosalind-cli
+  import: base
   import: deps
   main-is: CLI.hs
   ghc-options:  -main-is CLI
@@ -167,9 +172,7 @@ executable rosalind-cli
   hs-source-dirs: app/  
   ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
   build-depends:
-    base 
-    , Rosalind-lib
-    , extra
+      Rosalind-lib
     , optparse-applicative
     , text
     , timeit
@@ -177,6 +180,7 @@ executable rosalind-cli
     , filepath
     , warp
     , rosalind-server
+    , extra
   default-language: Haskell2010
   ghc-options:  -Wall  
                 -fno-warn-incomplete-uni-patterns
@@ -186,6 +190,7 @@ executable rosalind-cli
                 -Wmissing-fields    
 
 library rosalind-server
+  import: base
   import: deps
   other-modules:
   exposed-modules:
@@ -203,10 +208,10 @@ library rosalind-server
     , text
     , wai
     , warp
-    , extra
     , servant-openapi3
     , openapi3
     , wai-logger
+    , extra
   default-language: Haskell2010
   ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
@@ -216,6 +221,7 @@ library rosalind-server
               -Wmissing-fields    
 
 test-suite rosalind-server-test
+    import: base
     import: deps
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
@@ -226,8 +232,7 @@ test-suite rosalind-server-test
     other-modules:    
       Spec.ApiSpec   
     build-depends:     
-        base ^>=4.14.1.0
-      , Rosalind-lib
+        Rosalind-lib
       , rosalind-server
 
       , tasty                  
@@ -247,7 +252,6 @@ test-suite rosalind-server-test
       , lens
       , lens-aeson
       , containers
-      , extra
       , parsec
       , split
       
@@ -265,6 +269,7 @@ test-suite rosalind-server-test
       , wai
       , warp
       , http-client
+      , extra
     ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
               -Wincomplete-patterns             
