@@ -10,7 +10,7 @@ extra-source-files:
 
 
 common base
-  build-depends:       base >=4.14 && <4.15
+  build-depends:       base >=4.14 && <5
 
 common deps
   ghc-options:  -Wall                
@@ -200,7 +200,6 @@ library rosalind-server
       server/src
   build-depends:
       aeson
-    , base
     , containers
     , servant
     , servant-server
@@ -278,6 +277,7 @@ test-suite rosalind-server-test
               -Wmissing-fields    
 
 executable rosalind-generator  
+  import: base
   import: deps
   main-is: Main.hs
   ghc-options:  -main-is Main
@@ -287,8 +287,7 @@ executable rosalind-generator
   hs-source-dirs: generators/  
   ghc-options: 
   build-depends:
-      base >=4.7 && <5
-    ,  Rosalind-lib
+      Rosalind-lib
     , optparse-applicative
     , text
     , timeit
