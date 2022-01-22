@@ -24,9 +24,6 @@ cradle:
     - path: "./app/Rosalind/CLI/FileSystem.hs"
       component: "Rosalind:exe:rosalind-cli"
 
-    - path: "./app/Rosalind/Services/DataAccess.hs"
-      component: "Rosalind:exe:rosalind-cli"
-
     - path: "./server/src"
       component: "Rosalind:lib:rosalind-server"
 
@@ -37,6 +34,9 @@ cradle:
       component: "Rosalind:exe:rosalind-generator"
 
     - path: "./generators/Rosalind/GeneratorCLI/GeneratorCLI.hs"
+      component: "Rosalind:exe:rosalind-generator"
+
+    - path: "./generators/Rosalind/GeneratorCLI/GeneratorParser.hs"
       component: "Rosalind:exe:rosalind-generator"
 
     - path: "./generators/Rosalind/GeneratorCLI/PurescriptGenerator.hs"
