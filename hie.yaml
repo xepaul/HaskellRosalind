@@ -18,12 +18,6 @@ cradle:
     - path: "./app/Rosalind/CLI/ProblemRunnerParser.hs"
       component: "Rosalind:exe:rosalind-cli"
 
-    - path: "./app/Rosalind/CLI/Console.hs"
-      component: "Rosalind:exe:rosalind-cli"
-
-    - path: "./app/Rosalind/CLI/FileSystem.hs"
-      component: "Rosalind:exe:rosalind-cli"
-
     - path: "./server/src"
       component: "Rosalind:lib:rosalind-server"
 

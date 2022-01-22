@@ -5,7 +5,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE FlexibleContexts #-}
 
-module Rosalind.CLI.Console
+module Rosalind.Freer.ConsoleOut
   ( ConsoleOut
   , putStrLn'
   , runConsoleOutM

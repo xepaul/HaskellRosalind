@@ -28,8 +28,8 @@ import Rosalind.Problems.Orf qualified as ProbOrf
 import Rosalind.Problems.Frmt qualified as ProbFrmt
 import System.FilePath.Posix ((</>))
 import Control.Monad.Freer (Member, Eff)
-import Rosalind.CLI.Console (ConsoleOut, putStrLn')
-import Rosalind.CLI.FileSystem (FileSystem, getCurrentDirectory', readFile', writeFile')
+import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn')
+import Rosalind.Freer.FileSystem (FileSystem, getCurrentDirectory', readFile', writeFile')
 import Rosalind.Services.DataAccess (DataAccess)
 
 executeProblem ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => Problem -> Eff r  ()
