@@ -4,7 +4,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE DataKinds #-}
-module Rosalind.CLI.FileSystem where
+module Rosalind.Freer.FileSystem where
 import Control.Monad.Freer (Member, Eff, send, LastMember, interpretM)
 import System.Directory (getCurrentDirectory)
 

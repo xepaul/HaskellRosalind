@@ -55,7 +55,10 @@ library Rosalind-lib
                       Rosalind.ProteinWithStop
                       Rosalind.RosalindStrings                                                                                       
                       Rosalind.Services.Entrez   
-                      Rosalind.Services.DataAccess                   
+                      Rosalind.Services.DataAccess  
+                      Rosalind.Freer.FileSystem
+                      Rosalind.Freer.ConsoleOut                 
+                      Rosalind.Freer.EnvArgs                 
   build-depends:      containers
                       , lens
                       , mtl
@@ -171,8 +174,6 @@ executable rosalind-cli
     Rosalind.CLI.RouteCommands
     Rosalind.CLI.ProblemRunner   
     Rosalind.CLI.ProblemRunnerParser
-    Rosalind.CLI.Console
-    Rosalind.CLI.FileSystem    
   hs-source-dirs: app/  
   build-depends:
       Rosalind-lib
@@ -185,6 +186,7 @@ executable rosalind-cli
     , rosalind-server
     , extra
     , freer-simple
+    , mtl
   default-language: Haskell2010
   ghc-options:  
                 -Wall  

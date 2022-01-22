@@ -1,10 +1,13 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MonoLocalBinds #-}
 
-module Rosalind.CLI.ProblemRunnerParser 
+module Rosalind.CLI.ProblemRunnerParser
 (
-  parseCommandLine
+  parseCommandLine,
+  parseCommandLine'
   , getCommandName
   ) where
 
@@ -18,11 +21,28 @@ import Rosalind.CLI.RouteCommands
       Commands(..),
       ProblemCommands,
       InputFileOption(..) )
-
+import Rosalind.Freer.EnvArgs (EnvArgs, getArgs', getProgName')
+import Control.Monad.Freer (Member, Eff)
+import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn')
 parseCommandLine :: IO Commands
 parseCommandLine = customExecParser
-    (prefs $ showHelpOnEmpty <> showHelpOnError) 
+    (prefs $ showHelpOnEmpty <> showHelpOnError)
     optsWithHelp
+
+parseCommandLine' :: (Member EnvArgs r, Member ConsoleOut r)  => Eff r (Maybe Commands)
+parseCommandLine' = do
+  r <- execParserPure
+        (prefs $ showHelpOnEmpty <> showHelpOnError)
+        optsWithHelp <$> getArgs'
+  pgName <- getProgName'
+  case r of
+    Success com -> do return $ Just com
+    Failure pf -> do
+                    let (msg,_) =renderFailure pf  pgName
+                    putStrLn' msg
+                    return Nothing
+
+    CompletionInvoked  _ -> return Nothing
 
 commandsParser :: Parser Commands
 commandsParser =
@@ -66,7 +86,7 @@ problemsCommandsParser =
         )
     inputFileOption :: Parser InputFileOption
     inputFileOption = exampleInputFile <|> specifiedInputFile
-      where 
+      where
       exampleInputFile :: Parser InputFileOption
       exampleInputFile = flag' ExampleInputFile  (long "example" <> short 'e' <> style H.bold <> showDefault <> help "Override input FILE option to use the example input for the problem")
 
