@@ -295,6 +295,7 @@ executable rosalind-generator
   ghc-options:  -main-is Main
   other-modules:   
     Rosalind.GeneratorCLI.GeneratorCLI
+    Rosalind.GeneratorCLI.GeneratorParser
     Rosalind.GeneratorCLI.PurescriptGenerator
   hs-source-dirs: generators/  
   ghc-options: 
