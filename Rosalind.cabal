@@ -54,7 +54,8 @@ library Rosalind-lib
                       Rosalind.Motif 
                       Rosalind.ProteinWithStop
                       Rosalind.RosalindStrings                                                                                       
-                      Rosalind.Services.Entrez                      
+                      Rosalind.Services.Entrez   
+                      Rosalind.Services.DataAccess                   
   build-depends:      containers
                       , lens
                       , mtl
@@ -95,7 +96,8 @@ library Rosalind-lib
                       , servant-openapi3
                       , openapi3    
                       , servant
-                      , extra                   
+                      , extra 
+                      , freer-simple                  
   hs-source-dirs:   src/
   default-language: Haskell2010
 
@@ -162,15 +164,16 @@ test-suite Rosalind-test
 
 executable rosalind-cli
   import: base
-  import: deps
+  -- import: deps
   main-is: CLI.hs
   ghc-options:  -main-is CLI
   other-modules:
     Rosalind.CLI.RouteCommands
     Rosalind.CLI.ProblemRunner   
     Rosalind.CLI.ProblemRunnerParser
+    Rosalind.CLI.Console
+    Rosalind.CLI.FileSystem    
   hs-source-dirs: app/  
-  ghc-options: -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
   build-depends:
       Rosalind-lib
     , optparse-applicative
@@ -181,13 +184,22 @@ executable rosalind-cli
     , warp
     , rosalind-server
     , extra
+    , freer-simple
   default-language: Haskell2010
-  ghc-options:  -Wall  
+  ghc-options:  
+                -Wall  
                 -fno-warn-incomplete-uni-patterns
                 -Wincomplete-patterns             
                 -Wincomplete-uni-patterns 
                 -Wincomplete-record-updates 
                 -Wmissing-fields    
+                -Wall 
+                ---Werror 
+                -Wcompat 
+                -Widentities -Wincomplete-uni-patterns 
+                -Wincomplete-record-updates 
+                -Wno-unused-top-binds 
+                -Wno-orphans
 
 library rosalind-server
   import: base

@@ -1,6 +1,8 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MonoLocalBinds #-}
 
 module Rosalind.CLI.ProblemRunner where
 
@@ -10,18 +12,20 @@ import Data.Functor ( (<&>) )
 import Data.List qualified as List
 import Rosalind.CLI.RouteCommands
 import Rosalind.CLI.ProblemRunnerParser
-import Rosalind.Problems.Frmt qualified as ProbFrmt
 import Rosalind.Problems.Hamm qualified as ProbHamm
 import Rosalind.Problems.Prot qualified as ProbProt
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
 import Rosalind.Problems.Tran qualified as ProbTran
 import Rosalind.Problems.Orf qualified as ProbOrf
-import System.Directory (getCurrentDirectory)
+import Rosalind.Problems.Frmt qualified as ProbFrmt
 import System.FilePath.Posix ((</>))
-import System.TimeIt (timeIt)
+import Control.Monad.Freer (Member, Eff)
+import Rosalind.CLI.Console (Console, putStrLn')
+import Rosalind.CLI.FileSystem (FileSystem, getCurrentDirectory', readFile', writeFile')
+import Rosalind.Services.DataAccess (DataAccess)
 
-executeProblem :: Problem -> IO ()
+executeProblem ::(Member Console r, Member FileSystem r, Member DataAccess r) => Problem -> Eff r  ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) =
   executeCommand $ go selectedProblem
   where
@@ -33,8 +37,9 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
     go Tran = return . ProbTran.prob
     go Orf = return . ProbOrf.prob
     go Frmt = ProbFrmt.prob
+    executeCommand :: (Member Console r, Member FileSystem r, Member DataAccess r) => (String -> Eff r (Either String String)) -> Eff r ()
     executeCommand f = do
-      baseDir <- getCurrentDirectory <&> (</> "Data")
+      baseDir <- getCurrentDirectory' <&> (</> "Data")
       let s = filter isLetter $ getCommandName selectedProblem
           inputFilePath = case dataSetOption of
             ExampleInputFile -> baseDir </> s<>"_example.txt"
@@ -43,33 +48,22 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) =
             ExampleInputFile -> "Data" </> s<>"_example.txt"
             SpecifiedInputFile v -> v
           inputFilename = inputFilePath
-      putStrLn $ "Dataset option: " <> show dataSetOption
-      
-      putStrLn $ "Evaluating " <> s <> " -> " <> displayFilePath
-      readFile inputFilename
-        >>= (\c ->do checkDataSetInput selectedProblem c
-                     return c)
-        >>= timeIt . f
+      putStrLn' $ "Dataset option: " <> show dataSetOption
+
+      putStrLn' $ "Evaluating " <> s <> " -> " <> displayFilePath
+      readFile' inputFilename  >>= f
         >>= ( \r -> do
                 case r of
                   Right x-> do
-                    putStrLn "Result:"
+                    putStrLn' "Result:"
                     if List.length x > 10000
                       then do
-                        putStrLn $ List.take 10000 x
-                        putStrLn "..."
+                        putStrLn' $ List.take 10000 x
+                        putStrLn' "..."
                       else
-                        putStrLn $ List.take 10000 x
-                    writeFile (baseDir </> outputFilename) x
-                  Left v -> do putStrLn $ "Error:" <> v
+                        putStrLn' $ List.take 10000 x
+                    writeFile' (baseDir </> outputFilename) x
+                  Left v -> do putStrLn' $ "Error:" <> v
 
             )
-      putStrLn $ "Done -> " <> outputFilename
-    checkDataSetInput :: ProblemCommands -> String -> IO ()
-    checkDataSetInput p content = case p of 
-                          Orf -> do printDataset $ ProbOrf.checkDataset content
-                          _ -> return ()
-    printDataset :: (Show a) => Either String a -> IO ()
-    printDataset = \case
-                    Left v -> do putStrLn $ "Failed :" <> v
-                    Right v -> do putStrLn $ "Valid Dataset :\n" <> show v
+      putStrLn' $ "Done -> " <> outputFilename

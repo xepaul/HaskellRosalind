@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Rosalind.Problems.Frmt 
 (
   prob
@@ -10,11 +13,18 @@ import Data.List ( minimumBy )
 
 import Rosalind.Fasta ( showRosalindFasta,RosalindFasta(fData) )
 import Rosalind.Services.Entrez (getFastaFromEntrez)
+import Rosalind.Services.DataAccess (DataAccess, getFastaFromEntrez')
+import Control.Monad.Freer (Member, Eff, LastMember)
 
-prob :: MonadIO m => [Char] -> m (Either String String)
-prob input = liftIO ( runExceptT run  )
+prob :: (Member DataAccess r) => [Char] -> Eff r (Either String String)
+--prob :: String -> Eff r String
+prob input = run -- liftIO ( runExceptT run  )
   where
     genBankIds = words input
     run = do
-            fastas <- getFastaFromEntrez genBankIds
-            return $ showRosalindFasta $ minimumBy (compare `on` (length . fData)) fastas
+            (fastas:: Either String [RosalindFasta [Char]]) <- getFastaFromEntrez' genBankIds
+            case fastas of
+             Left _ -> return $Left  ""
+             Right v-> return $ Right $ showRosalindFasta $ minimumBy (compare `on` (length . fData)) v
+          
+           
