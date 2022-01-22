@@ -10,10 +10,10 @@ Run with
 ```
 ```
 Up to date
-Rosalind Problem runner
+Rosalind CLI
 
 Usage: rosalind-cli (COMMAND | COMMAND)
-  Runs Rosalind problems on a given dataset file Dataset/<problem name>.txt
+  Runs Rosalind problems and commands
 
 Available options:
   -h,--help                Show this help text
@@ -38,32 +38,17 @@ An example help for a  problem command
 ```
 ```
 Up to date
-Usage: rosalind-cli hamm [(-e|--example) | (-i|--input FILE)] [-o|--output FILE]
+Usage: rosalind-cli hamm [(-e|--example) | (-i|--input FILE)] 
+                         [-o|--output-dir OUTPUT_DIR]
   Execute problem hamm
 
 Available options:
   -e,--example             Override input FILE option to use the example input
                            for the problem
   -i,--input FILE          File input (default: "input.txt")
-  -o,--output FILE         Write output to FILE
+  -o,--output-dir OUTPUT_DIR
+                           Write output to FILE with path (default: "./out.txt")
 ```
-An example running the server
-
-```
-❯ cabal run rosalind-cli -- run
-```
-```
-Up to date
-runserver
-Listening on port 8081
-Converted AAGCT to AGCTT
-127.0.0.1 - - [19/Jan/2022:16:13:42 +0000] "GET /revc/AAGCT HTTP/1.1" 200 - 
-```
-```
-❯ curl http://localhost:8081/revc/AAGCT
-"AGCTT"% 
-```
-
 
 An example of running a problem.
 
@@ -80,7 +65,22 @@ Result:
 Done -> out.txt
 ```
 
+An example running the server
 
+```
+❯ cabal run rosalind-cli -- run
+```
+```
+Up to date
+runserver
+Listening on port 8081
+Converted AAGCT to AGCTT
+127.0.0.1 - - [19/Jan/2022:16:13:42 +0000] "GET /revc/AAGCT HTTP/1.1" 200 - 
+```
+```
+❯ curl http://localhost:8081/revc/AAGCT
+"AGCTT"% 
+```
 
 # Tests
 Run with 

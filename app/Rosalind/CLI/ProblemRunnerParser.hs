@@ -2,7 +2,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 
-module Rosalind.CLI.ProblemRunnerParser where
+module Rosalind.CLI.ProblemRunnerParser 
+(
+  parseCommandLine
+  , getCommandName
+  ) where
 
 import Data.Char (isLetter)
 import Data.List.Extra (enumerate)
@@ -14,6 +18,26 @@ import Rosalind.CLI.RouteCommands
       Commands(..),
       ProblemCommands,
       InputFileOption(..) )
+
+parseCommandLine :: IO Commands
+parseCommandLine = customExecParser
+    (prefs $ showHelpOnEmpty <> showHelpOnError) 
+    optsWithHelp
+
+commandsParser :: Parser Commands
+commandsParser =
+  subparser
+    (command "run" (info (pure RunServer) (progDesc "run server")))
+    <|> problemsCommandsParser
+
+optsWithHelp :: ParserInfo Commands
+optsWithHelp =
+  info
+    (commandsParser <**> helper)
+    ( fullDesc
+        <> progDesc "Runs Rosalind problems and commands"
+        <> header "Rosalind CLI"
+    )
 
 problemsCommandsParser :: Parser Commands
 problemsCommandsParser =
@@ -32,12 +56,13 @@ problemsCommandsParser =
                 (progDesc $ "Execute problem " <> filter isLetter name)
             )
     outOptionParser =
-      strOption
-        ( long "output"
+      option str
+        ( long "output-dir"
             <> short 'o'
-            <> metavar "FILE"
-            <> value "out.txt"
-            <> help "Write output to FILE"
+            <> metavar "OUTPUT_DIR"
+            <> value "./out.txt"
+            <> showDefault
+            <> help "Write output to FILE with path"
         )
     inputFileOption :: Parser InputFileOption
     inputFileOption = exampleInputFile <|> specifiedInputFile
@@ -58,4 +83,3 @@ problemsCommandsParser =
 
 getCommandName :: ProblemCommands -> String
 getCommandName = T.unpack . T.toLower . T.pack . show
-
