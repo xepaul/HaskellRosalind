@@ -23,7 +23,7 @@ import Language.PureScript.Bridge.TypeParameters (A)
 generatePurescript :: FilePath -> IO ()
 generatePurescript outputPath = do
   writePSTypesWith genLenses outputPath (buildBridge myBridge) myTypes
-  writeAPIModuleWithSettings generateSettings outputPath myBridgeProxy (Proxy :: Proxy RosalindApi)
+  generateWithSettings generateSettings outputPath myBridgeProxy (Proxy :: Proxy RosalindApi)
   where
     generateSettings :: Settings
     generateSettings = defaultSettings & set apiModuleName "Rosalind.Webserver"

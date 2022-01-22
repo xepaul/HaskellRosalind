@@ -277,8 +277,7 @@ test-suite rosalind-server-test
               -Wincomplete-record-updates 
               -Wmissing-fields    
 
-executable rosalind-generator
-  import: base
+executable rosalind-generator  
   import: deps
   main-is: Main.hs
   ghc-options:  -main-is Main
@@ -288,7 +287,8 @@ executable rosalind-generator
   hs-source-dirs: generators/  
   ghc-options: 
   build-depends:
-      Rosalind-lib
+      base >=4.7 && <5
+    ,  Rosalind-lib
     , optparse-applicative
     , text
     , timeit
@@ -298,7 +298,7 @@ executable rosalind-generator
     , rosalind-server
     , extra
     , lens -any
-    , purescript-bridge -any
+    , purescript-bridge 
     , servant -any
     , servant-purescript
     , servant-server -any
