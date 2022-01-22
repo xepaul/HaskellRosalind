@@ -1,12 +1,15 @@
-packages: ./.
+index-state: 2022-01-21T00:00:00Z
+
+packages: .
 
 
 source-repository-package
     type: git
     location: https://github.com/input-output-hk/servant-purescript.git
-    branch: master
+    --branch: master
+    tag:ad9baf2f5aebe5536a497466e5453e6a5a861783
 
 source-repository-package
   type: git
   location: https://github.com/input-output-hk/purescript-bridge.git
-  tag: 366fc70b341e2633f3ad0158a577d52e1cd2b138
+  tag: 47a1f11825a0f9445e0f98792f79172efef66c00
