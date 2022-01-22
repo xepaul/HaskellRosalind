@@ -1,2 +1,43 @@
 cradle:
   cabal:
+    - path: "./src/"
+      component: "Rosalind:lib:Rosalind-lib"
+
+    - path: "./test/"
+      component: "Rosalind:test:Rosalind-test"
+
+    - path: "./app/CLI.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./app/Rosalind/CLI/RouteCommands.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./app/Rosalind/CLI/ProblemRunner.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./app/Rosalind/CLI/ProblemRunnerParser.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./app/Rosalind/CLI/Console.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./app/Rosalind/CLI/FileSystem.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./app/Rosalind/Services/DataAccess.hs"
+      component: "Rosalind:exe:rosalind-cli"
+
+    - path: "./server/src"
+      component: "Rosalind:lib:rosalind-server"
+
+    - path: "./server/test"
+      component: "Rosalind:test:rosalind-server-test"
+
+    - path: "./generators/Main.hs"
+      component: "Rosalind:exe:rosalind-generator"
+
+    - path: "./generators/Rosalind/GeneratorCLI/GeneratorCLI.hs"
+      component: "Rosalind:exe:rosalind-generator"
+
+    - path: "./generators/Rosalind/GeneratorCLI/PurescriptGenerator.hs"
+      component: "Rosalind:exe:rosalind-generator"

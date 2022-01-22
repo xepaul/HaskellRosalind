@@ -5,10 +5,13 @@ module CLI where
 
 import Options.Applicative
 import Rosalind.CLI.RouteCommands ( Commands(..) )
-import Rosalind.CLI.ProblemRunner
-import Rosalind.CLI.ProblemRunnerParser
+import Rosalind.CLI.ProblemRunner ( executeProblem )
+import Rosalind.CLI.ProblemRunnerParser ( problemsCommandsParser )
 import Rosalind.Server.App qualified as Rs (runServer)
-
+import Rosalind.CLI.Console (runConsoleM)
+import Control.Monad.Freer (runM)
+import Rosalind.CLI.FileSystem (runFileSystemM)
+import Rosalind.Services.DataAccess ( runDataAccessM )
 
 commandsParser :: Parser Commands
 commandsParser =
@@ -29,7 +32,7 @@ run :: Commands -> IO ()
 run RunServer = do
   putStrLn "runserver"
   Rs.runServer 8081
-run (RunProblem prob) = executeProblem prob
+run (RunProblem prob) = runM (runFileSystemM (runConsoleM ( runDataAccessM (executeProblem prob ))))
 
 main :: IO ()
 main = execParser optsWithHelp >>= run
