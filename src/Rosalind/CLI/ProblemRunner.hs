@@ -54,5 +54,5 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) = do
         Orf   -> return . ProbOrf.prob
         Frmt  -> ProbFrmt.prob
     getInputFileName problemName = case dataSetOption of
-                        ExampleInputFile -> getCurrentDirectory' <&> (</> "Data" </> problemName <>"_example.txt")
+                        ExampleInputFile -> return $ "." </> "Data" </> problemName <>"_example.txt"
                         SpecifiedInputFile v -> return v

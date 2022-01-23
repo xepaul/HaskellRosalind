@@ -33,6 +33,9 @@ library Rosalind-lib
   import: base
   import: deps
   exposed-modules:  
+                      Rosalind.CLI.RouteCommands     
+                      Rosalind.CLI.ProblemRunnerParser
+                      Rosalind.CLI.ProblemRunner 
                       Rosalind.Problems.Rna
                       Rosalind.Problems.Hamm
                       Rosalind.Problems.Revc
@@ -100,7 +103,9 @@ library Rosalind-lib
                       , openapi3    
                       , servant
                       , extra 
-                      , freer-simple                  
+                      , freer-simple   
+                      , optparse-applicative  
+                      , filepath             
   hs-source-dirs:   src/
   default-language: Haskell2010
 
@@ -130,7 +135,7 @@ test-suite Rosalind-test
         Spec.Rosalind.MotifHedgehogSpec
         Spec.Rosalind.Problems.FiltHedgehogSpec
     build-depends:     
-        Rosalind-lib
+        Rosalind-lib      
       , tasty                  
       , tasty-expected-failure
       , hedgehog               
@@ -157,6 +162,8 @@ test-suite Rosalind-test
       , either
       , mtl
       , extra
+      , optparse-applicative
+      , freer-simple 
     ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
               -Wincomplete-patterns             
@@ -171,9 +178,7 @@ executable rosalind-cli
   main-is: CLI.hs
   ghc-options:  -main-is CLI
   other-modules:
-    Rosalind.CLI.RouteCommands
-    Rosalind.CLI.ProblemRunner   
-    Rosalind.CLI.ProblemRunnerParser
+ 
   hs-source-dirs: app/  
   build-depends:
       Rosalind-lib
