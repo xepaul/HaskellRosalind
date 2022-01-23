@@ -33,7 +33,7 @@ import Rosalind.Services.DataAccess (DataAccess)
 
 executeProblem ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => Problem -> Eff r  ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) = do
-      let problemName = filter isLetter $ getCommandName selectedProblem
+      let problemName = filter isLetter $  getCommandName selectedProblem
       inputFilename <- getInputFileName problemName
       putStrLn $ "Dataset option: " <> show dataSetOption
       putStrLn $ "Evaluating " <> problemName <> " -> " <> inputFilename
