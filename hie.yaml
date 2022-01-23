@@ -9,15 +9,6 @@ cradle:
     - path: "./app/CLI.hs"
       component: "Rosalind:exe:rosalind-cli"
 
-    - path: "./app/Rosalind/CLI/RouteCommands.hs"
-      component: "Rosalind:exe:rosalind-cli"
-
-    - path: "./app/Rosalind/CLI/ProblemRunner.hs"
-      component: "Rosalind:exe:rosalind-cli"
-
-    - path: "./app/Rosalind/CLI/ProblemRunnerParser.hs"
-      component: "Rosalind:exe:rosalind-cli"
-
     - path: "./server/src"
       component: "Rosalind:lib:rosalind-server"
 
