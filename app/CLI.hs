@@ -12,7 +12,7 @@ import Control.Monad ((>>=), return)
 import Control.Monad.Freer (runM)
 import GHC.IO (IO)
 
-import Rosalind.Freer.ConsoleOut (runConsoleOutM, putStrLn')
+import Rosalind.Freer.ConsoleOut (runConsoleOutM, putStrLn)
 import Rosalind.Freer.FileSystem (runFileSystemM)
 import Rosalind.CLI.RouteCommands ( Commands(..) )
 import Rosalind.CLI.ProblemRunner ( executeProblem )
@@ -26,7 +26,7 @@ main :: IO ()
 main =  runM (runEnvArgsM (runConsoleOutM parseCommandLine')) >>= run
   where
     run (Just RunServer) = do
-      runM (runConsoleOutM (putStrLn' "runserver"))
+      runM (runConsoleOutM (putStrLn "runserver"))
       runServer 8081
     run (Just(RunProblem prob)) = runM (runFileSystemM (runConsoleOutM ( runDataAccessM (executeProblem prob ))))
     run Nothing = do

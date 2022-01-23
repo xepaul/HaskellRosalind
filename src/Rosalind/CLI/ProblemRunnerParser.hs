@@ -3,6 +3,7 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Rosalind.CLI.ProblemRunnerParser
 (
@@ -16,6 +17,7 @@ import Data.List.Extra (enumerate)
 import Data.Text qualified as T
 import Options.Applicative
 import Options.Applicative.Help qualified as H
+import Prelude hiding (putStrLn)
 import Rosalind.CLI.RouteCommands
     ( Problem(..),
       Commands(..),
@@ -23,7 +25,7 @@ import Rosalind.CLI.RouteCommands
       InputFileOption(..) )
 import Rosalind.Freer.EnvArgs (EnvArgs, getArgs', getProgName')
 import Control.Monad.Freer (Member, Eff)
-import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn')
+import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
 parseCommandLine :: IO Commands
 parseCommandLine = customExecParser
     (prefs $ showHelpOnEmpty <> showHelpOnError)
@@ -39,7 +41,7 @@ parseCommandLine' = do
     Success com -> do return $ Just com
     Failure pf -> do
                     let (msg,_) =renderFailure pf  pgName
-                    putStrLn' msg
+                    putStrLn msg
                     return Nothing
 
     CompletionInvoked  _ -> return Nothing

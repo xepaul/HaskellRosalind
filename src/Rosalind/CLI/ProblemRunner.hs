@@ -12,7 +12,6 @@ import Data.Char (isLetter)
 import Data.Either ( Either(..) )
 import Data.Either.Extra ( mapRight )
 import Data.Function ((.), ($))
-import Data.Functor ( (<&>) )
 import Data.List (filter)
 import Data.Semigroup ((<>))
 import GHC.Show (show)
@@ -28,21 +27,21 @@ import Rosalind.Problems.Orf qualified as ProbOrf
 import Rosalind.Problems.Frmt qualified as ProbFrmt
 import System.FilePath.Posix ((</>))
 import Control.Monad.Freer (Member, Eff)
-import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn')
-import Rosalind.Freer.FileSystem (FileSystem, getCurrentDirectory', readFile', writeFile')
+import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
+import Rosalind.Freer.FileSystem (FileSystem, readFile', writeFile')
 import Rosalind.Services.DataAccess (DataAccess)
 
 executeProblem ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => Problem -> Eff r  ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) = do
       let problemName = filter isLetter $ getCommandName selectedProblem
       inputFilename <- getInputFileName problemName
-      putStrLn' $ "Dataset option: " <> show dataSetOption
-      putStrLn' $ "Evaluating " <> problemName <> " -> " <> inputFilename
+      putStrLn $ "Dataset option: " <> show dataSetOption
+      putStrLn $ "Evaluating " <> problemName <> " -> " <> inputFilename
       readFile' inputFilename >>= f >>= (\case 
-                                          Left v -> putStrLn' $ "Error:" <> v
+                                          Left v -> putStrLn $ "Error:" <> v
                                           Right x -> do
                                                      writeFile' outputFilename x
-                                                     putStrLn' $ "Done -> " <> outputFilename )
+                                                     putStrLn $ "Done -> " <> outputFilename )
   where
     f = case selectedProblem of
         Hamm  -> return . mapRight show . ProbHamm.prob

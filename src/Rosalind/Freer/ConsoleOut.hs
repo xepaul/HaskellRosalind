@@ -5,30 +5,28 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 
 module Rosalind.Freer.ConsoleOut
   ( ConsoleOut
-  , putStrLn'
+  , putStrLn
   , runConsoleOutM
   , runDummyConsole
   ) where
 
-
-
-import Control.Monad.Freer (Eff, LastMember, Member, interpretM, reinterpret3, run, runM, send, type (~>), reinterpret, interpret)
-import Control.Monad.Freer.Error (Error, runError, throwError)
-import Control.Monad.Freer.State (State, get, put, runState)
-import Control.Monad.Freer.Writer (Writer, runWriter, tell)
-
+import Prelude hiding (putStrLn)
+import Prelude qualified as P (putStrLn)
+import Control.Monad.Freer (Eff, LastMember, interpretM, type (~>), interpret)
+import Control.Monad.Freer.TH ( makeEffect )
 data ConsoleOut s where
   PutStrLn    :: String -> ConsoleOut ()
-
-putStrLn' :: Member ConsoleOut r => String -> Eff r ()
-putStrLn' = send . PutStrLn
+makeEffect ''ConsoleOut
 
 runConsoleOutM :: forall effs a. LastMember IO effs
             => Eff (ConsoleOut ': effs) a -> Eff effs a
-runConsoleOutM = interpretM $ \case PutStrLn msg -> putStrLn msg
+runConsoleOutM = interpretM $ \case PutStrLn msg -> P.putStrLn msg
 
 
 runDummyConsole :: Eff (ConsoleOut ': effs) ~> Eff effs
