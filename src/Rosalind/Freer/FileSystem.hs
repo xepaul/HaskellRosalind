@@ -4,11 +4,13 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 module Rosalind.Freer.FileSystem where
 import Control.Monad.Freer (Member, Eff, send, LastMember, interpretM, type (~>), reinterpret)
 import Control.Monad.Freer.State (State, evalState, get, modify)
-import Data.List (deleteBy)
-import Data.Function (on)
+import Data.Map qualified as Map
+import Data.Map (Map)
+
 
 data FileSystem r where
   ReadFile :: FilePath -> FileSystem String
@@ -26,12 +28,11 @@ runFileSystemM = interpretM $ \case
   ReadFile msg -> readFile msg
   WriteFile filePath content -> writeFile filePath content
 
-runInMemoryFileSystem :: [(FilePath, String)] -> Eff (FileSystem ': effs) ~> Eff effs
+runInMemoryFileSystem :: Map FilePath String -> Eff (FileSystem ': effs) ~> Eff effs
 runInMemoryFileSystem initVfs = evalState initVfs . fsToState where
-  fsToState :: Eff (FileSystem ': effs) ~> Eff (State [(FilePath, String)] ': effs)
+  fsToState :: Eff (FileSystem ': effs) ~> Eff (State (Map FilePath String) ': effs)
   fsToState = reinterpret $ \case
-                              ReadFile path -> get >>= \vfs -> case lookup path vfs of
+                              ReadFile path -> get >>= \vfs -> case vfs Map.!?  path  of
                                 Just contents -> pure contents
                                 Nothing -> error ("readFile: no such file " ++ path)
-                              WriteFile path contents -> modify $ \vfs ->
-                                (path, contents) : deleteBy ((==) `on` fst) (path, contents) vfs                              
+                              WriteFile path contents -> modify $ Map.insert path contents 
