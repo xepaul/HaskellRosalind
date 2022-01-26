@@ -6,6 +6,7 @@
 {-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
+{-# OPTIONS_GHC -Wincomplete-patterns #-}
 
 module Spec.Rosalind.CLI.RnaHedgehogSpec (test_tests) where
 
@@ -86,3 +87,4 @@ propProblemCommands = property $ do
     Tran -> Hedgehog.assert True
     Frmt -> Hedgehog.assert True
     Orf -> Hedgehog.assert True
+    Cons -> Hedgehog.assert True

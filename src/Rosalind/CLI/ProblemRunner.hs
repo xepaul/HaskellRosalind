@@ -4,13 +4,14 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# OPTIONS_GHC -Wincomplete-patterns #-}
 
 module Rosalind.CLI.ProblemRunner where
 
 import Control.Monad ((>>=), Monad (return))
 import Data.Char (isLetter)
 import Data.Either ( Either(..) )
-import Data.Either.Extra ( mapRight )
+import Data.Either.Extra ( fromRight, mapRight )
 import Data.Function ((.), ($))
 import Data.List (filter)
 import Data.Semigroup ((<>))
@@ -25,6 +26,7 @@ import Rosalind.Problems.Rna qualified as ProbRna
 import Rosalind.Problems.Tran qualified as ProbTran
 import Rosalind.Problems.Orf qualified as ProbOrf
 import Rosalind.Problems.Frmt qualified as ProbFrmt
+import Rosalind.Problems.Cons qualified as ProbCons
 import System.FilePath.Posix ((</>))
 import Control.Monad.Freer (Member, Eff)
 import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
@@ -52,6 +54,7 @@ executeProblem (Problem selectedProblem dataSetOption outputFilename) = do
         Tran  -> return . ProbTran.prob
         Orf   -> return . ProbOrf.prob
         Frmt  -> ProbFrmt.prob
+        Cons  -> return .ProbCons.prob2
     getInputFileName problemName = case dataSetOption of
                         ExampleInputFile -> return $ "." </> "Data" </> problemName <>"_example.txt"
                         SpecifiedInputFile v -> return v
