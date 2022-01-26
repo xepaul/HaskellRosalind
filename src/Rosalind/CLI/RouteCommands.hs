@@ -21,6 +21,7 @@ data ProblemCommands
   | Tran
   | Frmt
   | Orf
+  | Cons
   deriving (Eq, Show, Bounded, Enum)
 
 data DatasetOption = RealDataset | ExampleDataset deriving (Show)

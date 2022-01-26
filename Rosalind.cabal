@@ -13,7 +13,8 @@ common base
   build-depends:       base >=4.14 && <5
 
 common deps
-  ghc-options:  -Wall                
+  ghc-options:  -Wall        
+                -- -Werror        
                 -fno-warn-incomplete-uni-patterns
                 -Wincomplete-patterns             
                 -Wincomplete-uni-patterns 
@@ -22,9 +23,9 @@ common deps
                 -Wunused-top-binds
                 -Wunused-local-binds
                 -Wunused-pattern-binds
-                -Wunused-matches
+                -- -Wunused-matches
                 -Wunused-do-bind
-                -Wunused-type-patterns
+                -- -Wunused-type-patterns
                 -Wunused-foralls
                 -Wunused-record-wildcards
                 -Wredundant-record-wildcards
@@ -48,6 +49,7 @@ library Rosalind-lib
                       Rosalind.Problems.FiltDataset
                       Rosalind.Problems.Filt
                       Rosalind.Problems.Lexf
+                      Rosalind.Problems.Cons 
                       Rosalind.Common
                       Rosalind.Codon2ProteinConv
                       Rosalind.DnaBase
@@ -112,7 +114,7 @@ library Rosalind-lib
 
 test-suite Rosalind-test
     import: base
-    import: deps
+   -- import: deps
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test/
@@ -121,6 +123,9 @@ test-suite Rosalind-test
       tasty-discover:tasty-discover     
     other-modules: 
         Spec.Rosalind.Common
+        Spec.Rosalind.Problems.HedgehogProperties.Gen
+        Spec.Rosalind.Problems.HedgehogProperties.RnaProperties
+        Spec.Rosalind.CLI.RnaHedgehogSpec
         Spec.Rosalind.Problems.RevcSpec  
         Spec.Rosalind.Problems.RevcHedgehogSpec  
         Spec.Rosalind.Problems.HammSpec  
@@ -136,6 +141,7 @@ test-suite Rosalind-test
         Spec.Rosalind.MotifHedgehogSpec
         Spec.Rosalind.Problems.FiltHedgehogSpec
         Spec.Rosalind.Problems.LexfHedgehogSpec
+        Spec.Rosalind.Problems.ConsHedgehogSpec        
     build-depends:     
         Rosalind-lib      
       , tasty                  
@@ -166,9 +172,13 @@ test-suite Rosalind-test
       , extra
       , optparse-applicative
       , freer-simple 
-    ghc-options:         -Wall  
+    ghc-options:         
+          -- -Wall  
               -fno-warn-incomplete-uni-patterns
-              -Wincomplete-patterns             
+                -Wincomplete-patterns      
+               -fshow-warning-groups      
+              -- -Werror 
+              -- -Werror=incomplete-patterns    
               -Wincomplete-uni-patterns 
               -Wincomplete-record-updates 
               -Wmissing-fields    
