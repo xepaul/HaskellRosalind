@@ -47,6 +47,7 @@ library Rosalind-lib
                       Rosalind.Problems.Frmt 
                       Rosalind.Problems.FiltDataset
                       Rosalind.Problems.Filt
+                      Rosalind.Problems.Lexf
                       Rosalind.Common
                       Rosalind.Codon2ProteinConv
                       Rosalind.DnaBase
@@ -134,6 +135,7 @@ test-suite Rosalind-test
         Spec.Rosalind.FastqHedgehogSpec
         Spec.Rosalind.MotifHedgehogSpec
         Spec.Rosalind.Problems.FiltHedgehogSpec
+        Spec.Rosalind.Problems.LexfHedgehogSpec
     build-depends:     
         Rosalind-lib      
       , tasty                  
