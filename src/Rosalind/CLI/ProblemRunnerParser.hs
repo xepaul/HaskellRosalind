@@ -7,8 +7,8 @@
 
 module Rosalind.CLI.ProblemRunnerParser
 (
-  parseCommandLine,
-  parseCommandLine'
+    parseCommandLine
+  , parseCommandLine'
   , getCommandName
   ) where
 
@@ -19,19 +19,19 @@ import Options.Applicative
 import Options.Applicative.Help qualified as H
 import Prelude hiding (putStrLn)
 import Rosalind.CLI.RouteCommands
-    ( Problem(..),
-      Commands(..),
+    ( ProblemCommand(..),
+      RouteCommands(..),
       ProblemCommands,
-      InputFileOption(..) )
+      InputFileOption(..), ServerCommands (RunServerCommand) )
 import Rosalind.Freer.EnvArgs (EnvArgs, getArgs', getProgName')
 import Control.Monad.Freer (Member, Eff)
 import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
-parseCommandLine :: IO Commands
+parseCommandLine :: IO RouteCommands
 parseCommandLine = customExecParser
     (prefs $ showHelpOnEmpty <> showHelpOnError)
     optsWithHelp
 
-parseCommandLine' :: (Member EnvArgs r, Member ConsoleOut r)  => Eff r (Maybe Commands)
+parseCommandLine' :: (Member EnvArgs r, Member ConsoleOut r)  => Eff r (Maybe RouteCommands)
 parseCommandLine' = do
   r <- execParserPure
         (prefs $ showHelpOnEmpty <> showHelpOnError)
@@ -46,38 +46,43 @@ parseCommandLine' = do
 
     CompletionInvoked  _ -> return Nothing
 
-commandsParser :: Parser Commands
-commandsParser =
-  subparser
-    (command "run" (info (pure RunServer) (progDesc "run server")))
-    <|> problemsCommandsParser
+pRouteCommands :: Parser RouteCommands
+pRouteCommands =
+  hsubparser $ mconcat[
+    command "server" (info (RunServer <$> pServerCommands ) (progDesc "server commands"))
+    ,
+    command "problem" $ info (RunProblem <$> pProblemCommand) (progDesc "run problem")
+  ]
 
-optsWithHelp :: ParserInfo Commands
+pServerCommands :: Parser ServerCommands
+pServerCommands = subparser ( command "run" (info (pure RunServerCommand ) (progDesc "run server")))
+
+optsWithHelp :: ParserInfo RouteCommands
 optsWithHelp =
   info
-    (commandsParser <**> helper)
+    (pRouteCommands <**> helper)
     ( fullDesc
         <> progDesc "Runs Rosalind problems and commands"
         <> header "Rosalind CLI"
     )
 
-problemsCommandsParser :: Parser Commands
-problemsCommandsParser =
+pProblemCommand :: Parser ProblemCommand
+pProblemCommand =
   subparser
     ( foldMap mkCommand (enumerate @ProblemCommands)
         <> commandGroup "Problem commands:"
     )
   where
-    mkCommand :: ProblemCommands -> Mod CommandFields Commands
+    mkCommand :: ProblemCommands -> Mod CommandFields ProblemCommand
     mkCommand c =
       let name = getCommandName c
        in command
             name
             ( info
-                (RunProblem <$> (Problem c <$> inputFileOption <*> outOptionParser))
+                (Problem c <$> pIinputFileOption <*> pOutOption)
                 (progDesc $ "Execute problem " <> filter isLetter name)
             )
-    outOptionParser =
+    pOutOption =
       option str
         ( long "output-dir"
             <> short 'o'
@@ -86,14 +91,14 @@ problemsCommandsParser =
             <> showDefault
             <> help "Write output to FILE with path"
         )
-    inputFileOption :: Parser InputFileOption
-    inputFileOption = exampleInputFile <|> specifiedInputFile
+    pIinputFileOption :: Parser InputFileOption
+    pIinputFileOption = pExampleInputFile <|> pSpecifiedInputFile
       where
-      exampleInputFile :: Parser InputFileOption
-      exampleInputFile = flag' ExampleInputFile  (long "example" <> short 'e' <> style H.bold <> showDefault <> help "Override input FILE option to use the example input for the problem")
+      pExampleInputFile :: Parser InputFileOption
+      pExampleInputFile = flag' ExampleInputFile  (long "example" <> short 'e' <> style H.bold <> showDefault <> help "Override input FILE option to use the example input for the problem")
 
-      specifiedInputFile :: Parser InputFileOption
-      specifiedInputFile =
+      pSpecifiedInputFile :: Parser InputFileOption
+      pSpecifiedInputFile =
             SpecifiedInputFile <$>
                       strOption
                             (long "input"
