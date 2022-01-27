@@ -24,3 +24,9 @@ input.txt
 out.txt
 /purescriptGeneratorTesting/
 .psc-ide-port
+
+/client/.spago
+/client/node_modules
+/client/output
+/client/src/generated
+/client/.purs-repl

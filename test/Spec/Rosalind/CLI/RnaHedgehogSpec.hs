@@ -61,10 +61,10 @@ test_tests =
 
 runRnaCliProb :: String -> String
 runRnaCliProb = runCliProb (Problem Rna ExampleInputFile "./out.txt")
-runCliProb ::Problem -> String -> String
+runCliProb ::ProblemCommand -> String -> String
 runCliProb p input = run (runInMemoryFileSystem fileSystemLookup1 (runDummyConsole ( runDummyDataAccess exeAndReadOutputFile)))
     where
-    prob1 :: Problem
+    prob1 :: ProblemCommand
     prob1 = p
     n =  (filter isLetter .T.unpack . T.toLower . T.pack . show) $ probCommand p
     exeAndReadOutputFile = executeProblem prob1 >> readFile' "./out.txt"

@@ -1,10 +1,11 @@
 module Rosalind.CLI.RouteCommands where
 
-data Commands
-  = RunServer
-  | RunProblem Problem
+data RouteCommands
+  = RunServer ServerCommands
+  | RunProblem ProblemCommand
   
-data Problem = Problem
+data ServerCommands = RunServerCommand
+data ProblemCommand = Problem
   { probCommand :: ProblemCommands,
     optInputFile :: InputFileOption,
     optOutOption :: String

@@ -17,7 +17,7 @@ import Data.List (filter)
 import Data.Semigroup ((<>))
 import GHC.Show (show)
 
-import Rosalind.CLI.RouteCommands ( InputFileOption(..), ProblemCommands(..), Problem(..) )
+import Rosalind.CLI.RouteCommands ( InputFileOption(..), ProblemCommands(..), ProblemCommand(..) )
 import Rosalind.CLI.ProblemRunnerParser ( getCommandName )
 import Rosalind.Problems.Hamm qualified as ProbHamm
 import Rosalind.Problems.Prot qualified as ProbProt
@@ -33,7 +33,7 @@ import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
 import Rosalind.Freer.FileSystem (FileSystem, readFile', writeFile')
 import Rosalind.Services.DataAccess (DataAccess)
 
-executeProblem ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => Problem -> Eff r  ()
+executeProblem ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => ProblemCommand -> Eff r  ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) = do
       let problemName = filter isLetter $  getCommandName selectedProblem
       inputFilename <- getInputFileName problemName
