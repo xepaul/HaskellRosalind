@@ -2,6 +2,8 @@
 
 [Rosalind Problems Information](https://rosalind.info/problems/list-view/)
 
+![CI](https://github.com/futurum-dev/dotnet.futurum.webapiendpoint/workflows/haskellMatix/badge.svg)
+
 Rosalind Command Line [CLI.hs](app/CLI.hs)
 
 Run with
