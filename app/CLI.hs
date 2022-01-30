@@ -1,34 +1,29 @@
-{-# LANGUAGE ImportQualifiedPost #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MonoLocalBinds #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module CLI where
 
-import Control.Monad ((>>=), return)
 import Control.Monad.Freer (runM)
-import GHC.IO (IO)
+import Data.Function ((&))
+import Prelude hiding (putStrLn)
 
-import Rosalind.Freer.ConsoleOut (runConsoleOutM, putStrLn)
-import Rosalind.Freer.FileSystem (runFileSystemM)
-import Rosalind.CLI.RouteCommands ( RouteCommands(..), ServerCommands (RunServerCommand) )
-import Rosalind.CLI.ProblemRunner ( executeProblem )
-import Rosalind.CLI.ProblemRunnerParser ( parseCommandLine' )
-import Rosalind.Server.App (runServer)
-import Rosalind.Services.DataAccess (runDataAccessM)
+import Rosalind.Freer.ConsoleOut ( runConsoleOutM)
 import Rosalind.Freer.EnvArgs (runEnvArgsM)
-import Data.Maybe (Maybe(..))
-
+import Rosalind.Freer.FileSystem (runFileSystemM)
+import Rosalind.CLI.Server (runServerM)
+import Rosalind.Services.DataAccess (runDataAccessM)
+import Rosalind.CLI.CliProgram (runProgram)
 main :: IO ()
-main =  runM (runEnvArgsM (runConsoleOutM parseCommandLine')) >>= run
-  where
-    run (Just (RunServer RunServerCommand )) = do      
-      runM (runConsoleOutM (putStrLn "runserver"))
-      runServer 8081
-    run (Just(RunProblem prob)) = runM (runFileSystemM (runConsoleOutM ( runDataAccessM (executeProblem prob ))))
-    run Nothing = do
-            -- putStrLn "Not Supporting completion"
-            return ()
+main =
+  runProgram
+    & runServerM
+    & runConsoleOutM
+    & runEnvArgsM
+    & runFileSystemM
+    & runDataAccessM
+    & runM
