@@ -1,8 +1,9 @@
 # Roslind Problem Solutions in Haskell
 
+![CI](https://github.com/xepaul/HaskellRosalind/actions/workflows/haskellMatix.yml/badge.svg)
+
 [Rosalind Problems Information](https://rosalind.info/problems/list-view/)
 
-![CI](https://github.com/xepaul/HaskellRosalind/actions/workflows/haskellMatix.yml/badge.svg)
 Rosalind Command Line [CLI.hs](app/CLI.hs)
 
 Run with
@@ -13,14 +14,25 @@ Run with
 Up to date
 Rosalind CLI
 
-Usage: rosalind-cli (COMMAND | COMMAND)
+Usage: rosalind-cli COMMAND
   Runs Rosalind problems and commands
 
 Available options:
   -h,--help                Show this help text
 
 Available commands:
-  run                      run server
+  server                   server commands
+  problem                  run problem
+```
+```
+❯ cabal run rosalind-cli -- --help problem
+```
+```
+Usage: rosalind-cli problem COMMAND
+  run problem
+
+Available options:
+  -h,--help                Show this help text
 
 Problem commands:
   hamm                     Execute problem hamm
@@ -31,7 +43,9 @@ Problem commands:
   tran                     Execute problem tran
   frmt                     Execute problem frmt
   orf                      Execute problem orf
+  cons                     Execute problem cons
 ```
+
 An example help for a  problem command
 
 ```
