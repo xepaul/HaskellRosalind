@@ -36,7 +36,7 @@ library Rosalind-lib
   exposed-modules:  
                       Rosalind.CLI.RouteCommands     
                       Rosalind.CLI.ProblemRunnerParser
-                      Rosalind.CLI.ProblemRunner 
+                      Rosalind.CLI.ProblemRunner                       
                       Rosalind.Problems.Rna
                       Rosalind.Problems.Hamm
                       Rosalind.Problems.Revc
@@ -189,7 +189,9 @@ executable rosalind-cli
   -- import: deps
   main-is: CLI.hs
   ghc-options:  -main-is CLI
-  other-modules:
+  other-modules:    
+    Rosalind.CLI.Server
+    Rosalind.CLI.CliProgram
  
   hs-source-dirs: app/  
   build-depends:
@@ -204,6 +206,7 @@ executable rosalind-cli
     , extra
     , freer-simple
     , mtl
+    , wai-logger
   default-language: Haskell2010
   ghc-options:  
                 -Wall  
@@ -242,6 +245,7 @@ library rosalind-server
     , openapi3
     , wai-logger
     , extra
+    , freer-simple
   default-language: Haskell2010
   ghc-options:         -Wall  
               -fno-warn-incomplete-uni-patterns
