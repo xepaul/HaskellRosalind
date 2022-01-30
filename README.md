@@ -2,6 +2,7 @@
 
 [Rosalind Problems Information](https://rosalind.info/problems/list-view/)
 
+![CI](https://github.com/xepaul/HaskellRosalind/workflows/haskellMatix/badge.svg)
 Rosalind Command Line [CLI.hs](app/CLI.hs)
 
 Run with
