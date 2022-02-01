@@ -11,21 +11,65 @@ module Rosalind.CLI.ProblemRunnerParser
   , parseCommandLine'
   , getCommandName
   ) where
-
+import Control.Applicative ((<$>), Applicative (pure, (<*>)))
+import Control.Monad (Monad(return))
+import Control.Monad.Freer (Member, Eff)
 import Data.Char (isLetter)
+import Data.Maybe (Maybe (Just, Nothing))
+import Data.Function (($), (.))
+import Data.Foldable (Foldable(foldMap))
+import Data.List (filter)
 import Data.List.Extra (enumerate)
+import Data.Monoid (Monoid(mconcat))
+import Data.Semigroup ((<>))
+import Data.String (String)
 import Data.Text qualified as T
+import GHC.IO (IO)
+import GHC.Show (Show(show))
 import Options.Applicative
+    ( Alternative((<|>)),
+      (<**>),
+      CommandFields,
+      ParserInfo,
+      ParserResult(CompletionInvoked, Success, Failure),
+      execParserPure,
+      helper,
+      Parser,
+      command,
+      commandGroup,
+      flag',
+      fullDesc,
+      header,
+      help,
+      info,
+      long,
+      metavar,
+      option,
+      prefs,
+      progDesc,
+      short,
+      showDefault,
+      showHelpOnEmpty,
+      showHelpOnError,
+      str,
+      strOption,
+      style,
+      subparser,
+      value,
+      customExecParser,
+      hsubparser,
+      renderFailure,
+      Mod )
 import Options.Applicative.Help qualified as H
-import Prelude hiding (putStrLn)
+
 import Rosalind.CLI.RouteCommands
     ( ProblemCommand(..),
       RouteCommands(..),
       ProblemCommands,
       InputFileOption(..), ServerCommands (RunServerCommand) )
-import Rosalind.Freer.EnvArgs (EnvArgs, getArgs', getProgName')
-import Control.Monad.Freer (Member, Eff)
+
 import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
+import Rosalind.Freer.EnvArgs (EnvArgs, getArgs', getProgName')
 parseCommandLine :: IO RouteCommands
 parseCommandLine = customExecParser
     (prefs $ showHelpOnEmpty <> showHelpOnError)

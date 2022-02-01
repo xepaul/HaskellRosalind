@@ -1,13 +1,29 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Rosalind.Problems.Cons where
-import Rosalind.Fasta (parseManyDnaBaseFastas, RosalindFasta (fData))
-import qualified Data.Text as T
+  
+import Control.Monad (Monad(return))
+import Data.Char (Char)
+import Data.Either (fromRight, Either)
+import Data.Foldable (Foldable(foldl, length, foldMap), concatMap)
+import Data.Function ((.), ($))
+import Data.Functor ((<$>))
+import Data.Monoid (Monoid (mempty))
+import Data.Ord (Ord(compare))
+import Data.List qualified as List
+import Data.Int (Int)
+import Data.List(transpose, map, head, unlines, (++))
+import Data.String (String)
+import Data.Semigroup (Semigroup ((<>)))
+import Data.Text qualified as T
+import Data.Tuple (fst)
+import GHC.Num (Num((-), (+)))
+import GHC.Show (Show (show))
+
 import Rosalind.DnaBase (DnaBase)
 import Rosalind.DnaBase qualified as D (DnaBase(..))
-import Data.Either (fromRight)
-import Data.List qualified as List
-import Data.List(transpose)
+import Rosalind.Fasta (parseManyDnaBaseFastas, RosalindFasta (fData))
 
 data DnaCounts = DnaCounts {
                               a:: !Int,
