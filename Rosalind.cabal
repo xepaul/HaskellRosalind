@@ -36,7 +36,8 @@ library Rosalind-lib
   exposed-modules:  
                       Rosalind.CLI.RouteCommands     
                       Rosalind.CLI.ProblemRunnerParser
-                      Rosalind.CLI.ProblemRunner                       
+                      Rosalind.CLI.ProblemRunner    
+                      Rosalind.CLI.SolverRunner                  
                       Rosalind.Problems.Rna
                       Rosalind.Problems.Hamm
                       Rosalind.Problems.Revc

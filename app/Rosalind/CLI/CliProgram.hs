@@ -14,6 +14,7 @@ import Data.Maybe ( Maybe(Nothing, Just) )
 
 import Rosalind.CLI.Server (server,Server)
 import Rosalind.CLI.ProblemRunner (executeProblem)
+import Rosalind.CLI.SolverRunner (executeSolver)
 import Rosalind.CLI.ProblemRunnerParser (parseCommandLine')
 import Rosalind.CLI.RouteCommands (RouteCommands (..), ServerCommands (..))
 import Rosalind.Freer.ConsoleOut (ConsoleOut,putStrLn)
@@ -25,11 +26,16 @@ runProgram :: (Members '[ConsoleOut, FileSystem, EnvArgs,DataAccess,Server] r ) 
 runProgram =
     parseCommandLine'
     >>= \case
-      (Just (RunServer RunServerCommand)) -> do
-        putStrLn "runserver"
-        server 8081
-      (Just (RunProblem prob)) ->
-        executeProblem prob
-      Nothing -> do
-        -- putStrLn "Not Supporting completion"
-        return ()
+        Just cmd -> runCommand cmd            
+        Nothing -> do
+          -- putStrLn "Not Supporting completion"
+          return ()
+    where 
+      runCommand = \case 
+        RunServer RunServerCommand -> do
+          putStrLn "runserver"
+          server 8081
+        RunProblem prob ->
+          executeProblem prob
+        RunSolver prob ->
+          executeSolver prob

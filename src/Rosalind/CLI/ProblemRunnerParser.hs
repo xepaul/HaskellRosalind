@@ -66,7 +66,7 @@ import Rosalind.CLI.RouteCommands
     ( ProblemCommand(..),
       RouteCommands(..),
       ProblemCommands,
-      InputFileOption(..), ServerCommands (RunServerCommand) )
+      InputFileOption(..), ServerCommands (RunServerCommand),SolverCommand(..) )
 
 import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
 import Rosalind.Freer.EnvArgs (EnvArgs, getArgs', getProgName')
@@ -94,8 +94,8 @@ pRouteCommands :: Parser RouteCommands
 pRouteCommands =
   hsubparser $ mconcat[
     command "server" (info (RunServer <$> pServerCommands ) (progDesc "server commands"))
-    ,
-    command "problem" $ info (RunProblem <$> pProblemCommand) (progDesc "run problem")
+    , command "problem" $ info (RunProblem <$> pProblemCommand) (progDesc "run problem")
+    ,command "solver" $ info (RunSolver <$> pSolverCommand) (progDesc "run problem")
   ]
 
 pServerCommands :: Parser ServerCommands
@@ -109,6 +109,29 @@ optsWithHelp =
         <> progDesc "Runs Rosalind problems and commands"
         <> header "Rosalind CLI"
     )
+
+pSolverCommand :: Parser SolverCommand
+pSolverCommand =
+  subparser $ mconcat [
+                      command "dna2rna"
+                              ( info
+                                  (SolverCmdDnaToRna  <$> pdnaString)
+                                  (progDesc  "Execute problem dnatorna " )
+                              )
+                      ,command "revc"
+                              ( info
+                                  (SolverCmdRevc  <$> pdnaString)
+                                  (progDesc  "Execute problem revc " )
+                              )
+  ] 
+pdnaString :: Parser String
+pdnaString =
+   strOption
+        ( long "dnaInput"
+            <> short 'd'
+            <> metavar "DNA"           
+            <> help "DNA input"
+        )
 
 pProblemCommand :: Parser ProblemCommand
 pProblemCommand =
