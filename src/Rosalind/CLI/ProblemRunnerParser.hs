@@ -116,13 +116,19 @@ pSolverCommand =
                       command "dna2rna"
                               ( info
                                   (SolverCmdDnaToRna  <$> pdnaString)
-                                  (progDesc  "Execute problem dnatorna " )
+                                  (progDesc  "Convert DNA to RNA" )
                               )
                       ,command "revc"
                               ( info
                                   (SolverCmdRevc  <$> pdnaString)
-                                  (progDesc  "Execute problem revc " )
+                                  (progDesc  "Calc revc od DNA " )
                               )
+                      ,command "hamm"
+                              ( info
+                                  (SolverCmdHamm <$> pdnaString <*>  pdnaString)
+                                  (progDesc  "Execute problem hamm " )
+                              )
+                      
   ] 
 pdnaString :: Parser String
 pdnaString =
@@ -132,6 +138,7 @@ pdnaString =
             <> metavar "DNA"           
             <> help "DNA input"
         )
+        
 
 pProblemCommand :: Parser ProblemCommand
 pProblemCommand =

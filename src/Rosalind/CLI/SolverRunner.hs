@@ -15,10 +15,13 @@ import Data.Semigroup ((<>))
 import Rosalind.CLI.RouteCommands ( SolverCommand(..) )
 import Rosalind.Problems.Revc qualified as ProbRevc
 import Rosalind.Problems.Rna qualified as ProbRna
+import Rosalind.Problems.Hamm qualified as ProbHamm
 import Control.Monad.Freer (Member, Eff)
 import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
 import Rosalind.Freer.FileSystem (FileSystem)
 import Rosalind.Services.DataAccess (DataAccess)
+import Data.List (unlines)
+import GHC.Show (Show(show))
 
 executeSolver ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => SolverCommand -> Eff r  ()
 executeSolver = \case
@@ -33,4 +36,11 @@ executeSolver = \case
       Left e -> putStrLn $ "error "<> e
       Right r -> do
         putStrLn $ "DNA : " <> v
-        putStrLn $ "Revc: " <> r                                
+        putStrLn $ "Revc: " <> r        
+  SolverCmdHamm x y -> 
+    case ProbHamm.prob (unlines  [x,y]) of
+      Left e -> putStrLn $ "error "<> e
+      Right r -> do
+        putStrLn $ "Dna : " <> x
+        putStrLn $ "Dna : " <> y
+        putStrLn $ "Hamm: " <> show r                           
