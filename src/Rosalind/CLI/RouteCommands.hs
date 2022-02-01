@@ -10,7 +10,12 @@ import GHC.Show (Show)
 data RouteCommands
   = RunServer ServerCommands
   | RunProblem ProblemCommand
+  | RunSolver SolverCommand
   
+
+data SolverCommand =  SolverCmdDnaToRna String 
+    | SolverCmdRevc String
+
 data ServerCommands = RunServerCommand
 data ProblemCommand = Problem
   { probCommand :: ProblemCommands,
