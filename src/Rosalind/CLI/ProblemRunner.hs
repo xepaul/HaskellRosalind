@@ -5,13 +5,15 @@
 {-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# OPTIONS_GHC -Wincomplete-patterns #-}
+{-# LANGUAGE DataKinds #-}
 
 module Rosalind.CLI.ProblemRunner where
 
 import Control.Monad ((>>=), Monad (return))
+import Control.Monad.Freer (Members, Eff)
 import Data.Char (isLetter)
 import Data.Either ( Either(..) )
-import Data.Either.Extra ( fromRight, mapRight )
+import Data.Either.Combinators (mapRight)
 import Data.Function ((.), ($))
 import Data.List (filter)
 import Data.Semigroup ((<>))
@@ -28,12 +30,11 @@ import Rosalind.Problems.Orf qualified as ProbOrf
 import Rosalind.Problems.Frmt qualified as ProbFrmt
 import Rosalind.Problems.Cons qualified as ProbCons
 import System.FilePath.Posix ((</>))
-import Control.Monad.Freer (Member, Eff)
 import Rosalind.Freer.ConsoleOut (ConsoleOut, putStrLn)
 import Rosalind.Freer.FileSystem (FileSystem, readFile', writeFile')
 import Rosalind.Services.DataAccess (DataAccess)
 
-executeProblem ::(Member ConsoleOut r, Member FileSystem r, Member DataAccess r) => ProblemCommand -> Eff r  ()
+executeProblem ::(Members '[ConsoleOut, FileSystem, DataAccess] r) => ProblemCommand -> Eff r  ()
 executeProblem (Problem selectedProblem dataSetOption outputFilename) = do
       let problemName = filter isLetter $  getCommandName selectedProblem
       inputFilename <- getInputFileName problemName

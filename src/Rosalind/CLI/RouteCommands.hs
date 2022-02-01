@@ -1,4 +1,11 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Rosalind.CLI.RouteCommands where
+  
+import Data.Char (Char)
+import Data.Eq (Eq)
+import Data.String (String)
+import GHC.Enum (Bounded, Enum)
+import GHC.Show (Show)
 
 data RouteCommands
   = RunServer ServerCommands

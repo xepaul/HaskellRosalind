@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Rosalind.Problems.Filt 
 (
      prob
@@ -6,13 +7,22 @@ module Rosalind.Problems.Filt
 )
 where
 
-import Rosalind.Fastq (Fastaq (fqQuality))
-import GHC.Float (int2Double)
-import Data.Char (ord)
-import Rosalind.Problems.FiltDataset
-    ( FiltDataset(FiltDataset), parseDataset )
-import Rosalind.Common (count)
+import Control.Monad (Monad(return))
 import Control.Monad.Except (MonadError)
+import Data.Char (ord)
+import Data.Bool (Bool)
+import Data.Function (($), (.))
+import Data.List (length, map)
+import Data.Int (Int)
+import Data.String (String)
+import GHC.Base (Double, Ord ((>=)))
+import GHC.Num (Num((*), (-)))
+import GHC.Float (int2Double)
+import GHC.Real (Fractional((/)))
+
+import Rosalind.Common (count)
+import Rosalind.Fastq (Fastaq (fqQuality))
+import Rosalind.Problems.FiltDataset ( FiltDataset(FiltDataset), parseDataset )
 
 prob :: MonadError String m => String -> m Int
 prob s = do
