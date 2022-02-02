@@ -14,8 +14,9 @@ data RouteCommands
   
 
 data SolverCommand =  SolverCmdDnaToRna String 
-    | SolverCmdRevc String
-    | SolverCmdHamm String String
+                    | SolverCmdDnaToRnaMany  [String] 
+                    | SolverCmdRevc String
+                    | SolverCmdHamm String String
 
 data ServerCommands = RunServerCommand
 data ProblemCommand = Problem
