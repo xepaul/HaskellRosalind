@@ -11,7 +11,7 @@ module Rosalind.CLI.ProblemRunnerParser
   , parseCommandLine'
   , getCommandName
   ) where
-import Control.Applicative ((<$>), Applicative (pure, (<*>)))
+import Control.Applicative ((<$>), Applicative (pure, (<*>)), Alternative (many))
 import Control.Monad (Monad(return))
 import Control.Monad.Freer (Member, Eff)
 import Data.Char (isLetter)
@@ -118,15 +118,20 @@ pSolverCommand =
                                   (SolverCmdDnaToRna  <$> pdnaString)
                                   (progDesc  "Convert DNA to RNA" )
                               )
+                      ,command "dnas2rna"
+                              ( info
+                                  (SolverCmdDnaToRnaMany  <$> many pdnaString)
+                                  (progDesc  "Convert DNA to RNA" )
+                              )
                       ,command "revc"
                               ( info
                                   (SolverCmdRevc  <$> pdnaString)
-                                  (progDesc  "Calc revc od DNA " )
+                                  (progDesc  "Calculate the reverse complement of DNA " )
                               )
                       ,command "hamm"
                               ( info
                                   (SolverCmdHamm <$> pdnaString <*>  pdnaString)
-                                  (progDesc  "Execute problem hamm " )
+                                  (progDesc  "Calculate the hamm of 2 DNA sequences" )
                               )
                       
   ] 
