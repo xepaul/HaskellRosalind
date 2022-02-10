@@ -47,6 +47,7 @@ library Rosalind-lib
                       Rosalind.Problems.Orf
                       Rosalind.Problems.Subs 
                       Rosalind.Problems.Frmt 
+                      Rosalind.Problems.FrmtApp
                       Rosalind.Problems.FiltDataset
                       Rosalind.Problems.Filt
                       Rosalind.Problems.Lexf
@@ -66,6 +67,7 @@ library Rosalind-lib
                       Rosalind.Freer.FileSystem
                       Rosalind.Freer.ConsoleOut                 
                       Rosalind.Freer.EnvArgs                 
+                      Rosalind.Freer.App                 
   build-depends:      containers
                       , lens
                       , mtl
