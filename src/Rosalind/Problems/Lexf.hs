@@ -42,12 +42,16 @@ enumerateKmers n alphabet = let alphabet' = List.sort alphabet
         inc1 _ [] = []
 
 
+ex1 :: [Char]
 ex1 = "A C T G\n2"
 
+ex2 :: [Char]
 ex2 = "A B C D E F G H I J\n2"
 
+ex3 :: [Char]
 ex3 = "A B C D E F G\n3"
 
+prob' :: [Char] -> IO ()
 prob' s = do
   let r = fromRight "" $ prob s
   writeFile "./out.txt" r

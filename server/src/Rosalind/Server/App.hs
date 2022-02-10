@@ -8,9 +8,9 @@
 module Rosalind.Server.App where
 import Rosalind.Server.Api (app)
 
-import Network.Wai.Handler.Warp ( run, Port, setLogger, setPort, runSettings, defaultSettings )
+import Network.Wai.Handler.Warp ( Port, setLogger, setPort, runSettings, defaultSettings )
 import Network.Wai.Logger       (withStdoutLogger)
-import Control.Monad.Freer (Eff, LastMember, interpretM, interpret)
+import Control.Monad.Freer (Eff, LastMember, interpretM)
 import Control.Monad.Freer.TH ( makeEffect )
 runServer :: Port ->IO ()
 runServer p = do

@@ -14,7 +14,6 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Text.Megaparsec
 import Text.Megaparsec.Char ( char, string )
-import Text.Printf ( printf )
 
 data FastqParsingError = NonMatchingLengths Int Int Int [Char] [Char]
   deriving (Eq, Show, Ord)
@@ -43,7 +42,10 @@ parseFastaQ = do
 
         anyLetter =  map char $ filter (/= '\n') enumerate
         customFailureWith = customFailure. show
+
+fastaqQualityChars :: [Char]
 fastaqQualityChars = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+
 parseFastaq :: (MonadError String m) => String -> m Fastaq
 parseFastaq = liftEither . mapLeft (\x -> "fastq parsingError " <> show x )  . parse parseFastaQ "" . T.pack
 
