@@ -30,7 +30,6 @@ import Text.ParserCombinators.Parsec
     many1,
   )
 import Text.Printf (printf)
-import Data.List.Extra (enumerate)
 
 data Motif a
   = MotifValue a
@@ -39,7 +38,7 @@ data Motif a
   deriving (Show, Eq, Lift)
 
 parseMotif :: (SingleCharForm a) => Proxy a -> String -> Either String [Motif a]
-parseMotif p = mapLeft show <$> parse (motifParser (motifElementParser p)) ""
+parseMotif cProxy = mapLeft show <$> parse (motifParser (motifElementParser cProxy)) ""
   where
     motifParser :: Parser a -> Parser [Motif a]
     motifParser p = many1 (choice [motifValueParser p, motifAnyExceptParser p, motifOptionParser p])
@@ -89,19 +88,18 @@ makeMotifQuassiQuoter p =
     }
   where
     makeMotif :: (SingleCharForm a, Lift a) => Proxy a -> String -> Q Exp
-    makeMotif p name = case parseMotifWithProxy p name of
+    makeMotif cProxy name = case parseMotifWithProxy cProxy name of
       Left e ->
         fail $
           "Invalid Motif and example is 'N{P}[ST]{P}' elements NPST should be one of "
             <> map singleCharShow (getChars p)
             <> " "
             <> show e
-      Right v -> [|v|]
-      where
-        parseMotifWithProxy :: (SingleCharForm a) => Proxy a -> String -> Either String [Motif a]
-        parseMotifWithProxy p n = parseMotif p n
-        getChars :: (SingleCharForm a) => Proxy a -> [a]
-        getChars _ = singleChars
+      Right v -> [|v|]  
+    parseMotifWithProxy :: (SingleCharForm a) => Proxy a -> String -> Either String [Motif a]
+    parseMotifWithProxy cProxy n = parseMotif cProxy n
+    getChars :: (SingleCharForm a) => Proxy a -> [a]
+    getChars _ = singleChars
 
 findSubsWithMotif :: (Eq a) => [Motif a] -> [a] -> [Int]
 findSubsWithMotif t s =

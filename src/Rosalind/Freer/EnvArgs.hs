@@ -12,10 +12,7 @@ module Rosalind.Freer.EnvArgs
   , runEnvArgsM
   ) where
 
-import Control.Monad.Freer (Eff, LastMember, Member, interpretM, reinterpret3, run, runM, send)
-import Control.Monad.Freer.Error (Error, runError, throwError)
-import Control.Monad.Freer.State (State, get, put, runState)
-import Control.Monad.Freer.Writer (Writer, runWriter, tell)
+import Control.Monad.Freer (Eff, LastMember, Member, interpretM, send)
 import System.Environment
 
 data EnvArgs s where
