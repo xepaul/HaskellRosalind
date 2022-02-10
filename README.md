@@ -23,9 +23,10 @@ Available options:
 Available commands:
   server                   server commands
   problem                  run problem
+  solver                   run solver
 ```
 ```
-❯ cabal run rosalind-cli -- --help problem
+❯ cabal run rosalind-cli -- problem --help
 ```
 ```
 Usage: rosalind-cli problem COMMAND
@@ -49,12 +50,11 @@ Problem commands:
 An example help for a  problem command
 
 ```
-❯ cabal run rosalind-cli -- --help hamm
+❯ cabal run rosalind-cli -- problem --help hamm
 ```
 ```
-Up to date
-Usage: rosalind-cli hamm [(-e|--example) | (-i|--input FILE)] 
-                         [-o|--output-dir OUTPUT_DIR]
+Usage: rosalind-cli problem hamm [(-e|--example) | (-i|--input FILE)] 
+                                 [-o|--output-dir OUTPUT_DIR]
   Execute problem hamm
 
 Available options:
@@ -68,16 +68,53 @@ Available options:
 An example of running a problem.
 
 ```
-❯ cabal run rosalind-cli -- hamm
+❯ cabal run rosalind-cli -- problem hamm
 ```
 ```
-Up to date
 Dataset option: SpecifiedInputFile "input.txt"
 Evaluating hamm -> input.txt
-CPU time:   0.00s
-Result:
-466
-Done -> out.txt
+Done -> ./out.txt
+```
+
+
+An example of running a solver.
+
+
+```
+❯ cabal run rosalind-cli -- solver --help
+```
+```
+Usage: rosalind-cli solver COMMAND
+  run solver
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  dna2rna                  Convert DNA to RNA
+  dnas2rna                 Convert multiple DNA to RNA
+  revc                     Calculate the reverse complement of DNA
+  hamm                     Calculate the hamm of 2 DNA sequences
+```
+
+
+```
+❯ cabal run rosalind-cli -- solver --help dna2rna
+```
+```
+Usage: rosalind-cli solver dna2rna (-d|--dnaInput DNA)
+  Convert DNA to RNA
+
+Available options:
+  -d,--dnaInput DNA        DNA input
+```
+
+```
+❯ cabal run rosalind-cli -- solver dna2rna -d ACGTAACCGGTT
+```
+```
+DNA: ACGTAACCGGTT
+RNA: ACGUAACCGGUU
 ```
 
 An example running the server

@@ -95,7 +95,7 @@ pRouteCommands =
   hsubparser $ mconcat[
     command "server" (info (RunServer <$> pServerCommands ) (progDesc "server commands"))
     , command "problem" $ info (RunProblem <$> pProblemCommand) (progDesc "run problem")
-    ,command "solver" $ info (RunSolver <$> pSolverCommand) (progDesc "run problem")
+    ,command "solver" $ info (RunSolver <$> pSolverCommand) (progDesc "run solver")
   ]
 
 pServerCommands :: Parser ServerCommands
@@ -121,7 +121,7 @@ pSolverCommand =
                       ,command "dnas2rna"
                               ( info
                                   (SolverCmdDnaToRnaMany  <$> many pdnaString)
-                                  (progDesc  "Convert DNA to RNA" )
+                                  (progDesc  "Convert multiple DNA to RNA" )
                               )
                       ,command "revc"
                               ( info
