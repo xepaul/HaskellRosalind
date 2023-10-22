@@ -1,17 +1,18 @@
-cabal-version:      3.0
+cabal-version:      3.8
 name:               Rosalind
 version:            0.1.0.0
 synopsis:
 
 
+build-type:         Simple
 
 extra-source-files:
     README.md
 
 
 common base
-  build-depends:       base >=4.14 && <5
-
+  --build-depends:       base >=4.14 && <5
+  build-depends:       base >= 4.17.2.0 
 common deps
   ghc-options:  -Wall        
                 -- -Werror        
@@ -30,7 +31,7 @@ common deps
                 -Wunused-record-wildcards
                 -Wredundant-record-wildcards
                 -- -Wunused-packages
-library Rosalind-lib
+library 
   import: base
   import: deps
   exposed-modules:  
@@ -105,19 +106,21 @@ library Rosalind-lib
                       , vector        
                       , template-haskell
                       , generic-monoid    
-                      , servant-openapi3
+                      , servant-openapi3 
                       , openapi3    
                       , servant
                       , extra 
-                      , freer-simple   
+                      , free
+                      , freer-simple  
                       , optparse-applicative  
                       , filepath             
+                      , wai 
   hs-source-dirs:   src/
   default-language: Haskell2010
 
 test-suite Rosalind-test
     import: base
-   -- import: deps
+    import: deps
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test/
@@ -146,8 +149,9 @@ test-suite Rosalind-test
         Spec.Rosalind.Problems.LexfHedgehogSpec
         Spec.Rosalind.Problems.ConsHedgehogSpec        
     build-depends:     
-        Rosalind-lib      
-      , tasty                  
+          
+       tasty
+       , Rosalind               
       , tasty-expected-failure
       , hedgehog               
       , tasty-hedgehog    
@@ -174,7 +178,8 @@ test-suite Rosalind-test
       , mtl
       , extra
       , optparse-applicative
-      , freer-simple 
+      , freer-simple
+      
     ghc-options:         
           -- -Wall  
               -fno-warn-incomplete-uni-patterns
@@ -187,171 +192,175 @@ test-suite Rosalind-test
               -Wmissing-fields    
 
 
-executable rosalind-cli
-  import: base
-  -- import: deps
-  main-is: CLI.hs
-  ghc-options:  -main-is CLI
-  other-modules:    
-    Rosalind.CLI.Server
-    Rosalind.CLI.CliProgram
+-- executable rosalind-cli
+--   import: base
+--   -- import: deps
+--   main-is: CLI.hs
+--   ghc-options:  -main-is CLI
+--   other-modules:    
+--     Rosalind.CLI.Server
+--     Rosalind.CLI.CliProgram
  
-  hs-source-dirs: app/  
-  build-depends:
-      Rosalind-lib
-    , optparse-applicative
-    , text
-    , timeit
-    , directory
-    , filepath
-    , warp
-    , rosalind-server
-    , extra
-    , freer-simple
-    , mtl
-    , wai-logger
-  default-language: Haskell2010
-  ghc-options:  
-                -Wall  
-                -fno-warn-incomplete-uni-patterns
-                -Wincomplete-patterns             
-                -Wincomplete-uni-patterns 
-                -Wincomplete-record-updates 
-                -Wmissing-fields    
-                -Wall 
-                ---Werror 
-                -Wcompat 
-                -Widentities -Wincomplete-uni-patterns 
-                -Wincomplete-record-updates 
-                -Wno-unused-top-binds 
-                -Wno-orphans
 
-library rosalind-server
-  import: base
-  import: deps
-  other-modules:
-  exposed-modules:
-      Rosalind.Server.Api      
-      Rosalind.Server.App      
-  hs-source-dirs:
-      server/src
-  build-depends:
-      aeson
-    , containers
-    , servant
-    , servant-server
-    , Rosalind-lib
-    , text
-    , wai
-    , warp
-    , servant-openapi3
-    , openapi3
-    , wai-logger
-    , extra
-    , freer-simple
-  default-language: Haskell2010
-  ghc-options:         -Wall  
-              -fno-warn-incomplete-uni-patterns
-              -Wincomplete-patterns             
-              -Wincomplete-uni-patterns 
-              -Wincomplete-record-updates 
-              -Wmissing-fields    
+-- library rosalind-server
+--   import: base
+--   import: deps
+--   other-modules:
+--   exposed-modules:
+--       Rosalind.Server.Api      
+--       Rosalind.Server.App      
+--   hs-source-dirs:
+--       server/src
+--   build-depends:
+--       aeson
+--     , containers
+--     , servant
+--     , servant-server
+--     , rosalind-lib
+--     , text
+--     , wai
+--     , warp
+--     , servant-openapi3
+--     , openapi3
+--     , wai-logger
+--     , extra
+--     , freer-simple
+--   default-language: Haskell2010
+--   ghc-options:         -Wall  
+--               -fno-warn-incomplete-uni-patterns
+--               -Wincomplete-patterns             
+--               -Wincomplete-uni-patterns 
+--               -Wincomplete-record-updates 
+--               -Wmissing-fields    
 
-test-suite rosalind-server-test
-    import: base
-    import: deps
-    default-language: Haskell2010
-    type:             exitcode-stdio-1.0
-    hs-source-dirs:   server/test
-    main-is:          Driver.hs
-    build-tool-depends:
-      tasty-discover:tasty-discover     
-    other-modules:    
-      Spec.ApiSpec   
-    build-depends:     
-        Rosalind-lib
-      , rosalind-server
+--   hs-source-dirs: app/  
+--   build-depends:
+--       rosalind-lib
+--     , optparse-applicative
+--     , text
+--     , timeit
+--     , directory
+--     , filepath
+--     , warp
+--     , rosalind-server
+--     , extra
+--     , freer-simple
+--     , mtl
+--     , wai-logger
+--   default-language: Haskell2010
+--   ghc-options:  
+--                 -Wall  
+--                 -fno-warn-incomplete-uni-patterns
+--                 -Wincomplete-patterns             
+--                 -Wincomplete-uni-patterns 
+--                 -Wincomplete-record-updates 
+--                 -Wmissing-fields    
+--                 -Wall 
+--                 ---Werror 
+--                 -Wcompat 
+--                 -Widentities -Wincomplete-uni-patterns 
+--                 -Wincomplete-record-updates 
+--                 -Wno-unused-top-binds 
+--                 -Wno-orphans
 
-      , tasty                  
-      , tasty-expected-failure
-      , hedgehog               
-      , tasty-hedgehog    
-      , tasty-quickcheck   
-      , hspec
-      , containers
-      , tasty-hunit
-      , tasty-hspec
-      , smallcheck   
-      , tasty-th
-      , HUnit
-      , QuickCheck
 
-      , lens
-      , lens-aeson
-      , containers
-      , parsec
-      , split
+
+-- test-suite rosalind-server-test
+--     import: base
+--     import: deps
+--     default-language: Haskell2010
+--     type:             exitcode-stdio-1.0
+--     hs-source-dirs:   server/test
+--     main-is:          Driver.hs
+--     build-tool-depends:
+--       tasty-discover:tasty-discover     
+--     other-modules:    
+--       Spec.ApiSpec   
+--     build-depends:     
+--         rosalind-lib
+--       , rosalind-server
+
+--       , tasty                  
+--       , tasty-expected-failure
+--       , hedgehog               
+--       , tasty-hedgehog    
+--       , tasty-quickcheck   
+--       , hspec
+--       , containers
+--       , tasty-hunit
+--       , tasty-hspec
+--       , smallcheck   
+--       , tasty-th
+--       , HUnit
+--       , QuickCheck
+
+--       , lens
+--       , lens-aeson
+--       , containers
+--       , parsec
+--       , split
       
-      , aeson
+--       , aeson
       
-      , text
-      , unordered-containers
-      , megaparsec  
-      , directory
-      , filepath    
-      , either
-      , servant-client
-      , servant-server
-      , servant
-      , wai
-      , warp
-      , http-client
-      , extra
-    ghc-options:         -Wall  
-              -fno-warn-incomplete-uni-patterns
-              -Wincomplete-patterns             
-              -Wincomplete-uni-patterns 
-              -Wincomplete-record-updates 
-              -Wmissing-fields    
+--       , text
+--       , unordered-containers
+--       , megaparsec  
+--       , directory
+--       , filepath    
+--       , either
+--       , servant-client
+--       , servant-server
+--       , servant
+--       , wai
+--       , warp
+--       , http-client
+--       , extra
+--       , hspec-golden
+--     ghc-options:         -Wall  
+--               -fno-warn-incomplete-uni-patterns
+--               -Wincomplete-patterns             
+--               -Wincomplete-uni-patterns 
+--               -Wincomplete-record-updates 
+--               -Wmissing-fields    
 
-executable rosalind-generator  
-  import: base
-  import: deps
-  main-is: Main.hs
-  ghc-options:  -main-is Main
-  other-modules:   
-    Rosalind.GeneratorCLI.GeneratorCLI
-    Rosalind.GeneratorCLI.GeneratorParser
-    Rosalind.GeneratorCLI.PurescriptGenerator
-  hs-source-dirs: generators/  
-  ghc-options: 
-  build-depends:
-      Rosalind-lib
-    , optparse-applicative
-    , text
-    , timeit
-    , directory
-    , filepath
-    , warp
-    , rosalind-server
-    , extra
-    , lens -any
-    , purescript-bridge 
-    , servant -any
-    , servant-purescript
-    , servant-server -any
-    , text -any
-    , aeson
-    , servant-foreign
-    , containers
-  default-language: Haskell2010
-  ghc-options:  -Wall  
-                -fno-warn-incomplete-uni-patterns
-                -Wincomplete-patterns             
-                -Wincomplete-uni-patterns 
-                -Wincomplete-record-updates 
-                -Wmissing-fields    
-                -Wall -Werror -Wcompat 
-                -Widentities -Wincomplete-uni-patterns 
-                -Wincomplete-record-updates 
-                -Wno-unused-top-binds -Wno-orphans
+-- -- executable rosalind-generator  
+-- --   import: base
+-- --   import: deps
+-- --   main-is: Main.hs
+-- --   ghc-options:  -main-is Main
+-- --   other-modules:   
+-- --     Rosalind.GeneratorCLI.GeneratorCLI
+-- --     Rosalind.GeneratorCLI.GeneratorParser
+-- --     Rosalind.GeneratorCLI.PurescriptGenerator
+-- --   hs-source-dirs: generators/  
+-- --   ghc-options: 
+-- --   build-depends:
+-- --       rosalind-lib
+-- --     , optparse-applicative
+-- --     , text
+-- --     , timeit
+-- --     , directory
+-- --     , filepath
+-- --     , warp
+-- --     , rosalind-server
+-- --     , extra
+-- --     , lens
+-- --     , purescript-bridge 
+-- --     , servant
+-- --     , servant-purescript
+-- --     , servant-server
+-- --     , text
+-- --     , aeson
+-- --     , servant-foreign
+-- --     , containers
+-- --   default-language: Haskell2010
+-- --   ghc-options:  -Wall  
+-- --                 -fno-warn-incomplete-uni-patterns
+-- --                 -Wincomplete-patterns             
+-- --                 -Wincomplete-uni-patterns 
+-- --                 -Wincomplete-record-updates 
+-- --                 -Wmissing-fields    
+-- --                 -Wall -Werror -Wcompat 
+-- --                 -Widentities -Wincomplete-uni-patterns 
+-- --                 -Wincomplete-record-updates 
+-- --                 -Wno-unused-top-binds -Wno-orphans

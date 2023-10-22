@@ -17,7 +17,8 @@ module Rosalind.Freer.ConsoleOut
   ) where
 
 import Control.Monad.Freer (Eff, LastMember, interpretM, type (~>), interpret)
-import Control.Monad.Freer.TH ( makeEffect )
+import Control.Monad.Freer (Member, Eff, send, LastMember, interpretM, type (~>), reinterpret)
+-- import Control.Monad.Freer.TH ( makeEffect )
 import Data.String (String)
 import GHC.IO (IO)
 import Data.Function (($))
@@ -26,7 +27,10 @@ import System.IO qualified as S (putStrLn)
 
 data ConsoleOut s where
   PutStrLn    :: String -> ConsoleOut ()
-makeEffect ''ConsoleOut
+
+
+putStrLn :: Member ConsoleOut effs => String -> Eff effs ()
+putStrLn  a = send ( PutStrLn a)
 
 runConsoleOutM :: forall effs a. LastMember IO effs
             => Eff (ConsoleOut ': effs) a -> Eff effs a

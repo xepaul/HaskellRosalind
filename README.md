@@ -2,9 +2,14 @@
 
 ![CI](https://github.com/xepaul/HaskellRosalind/actions/workflows/haskellMatix.yml/badge.svg)
 
-[Rosalind Problems Information](https://rosalind.info/problems/list-view/)
+[Rosalind Problems](https://rosalind.info/problems/list-view/)
+
+[Example Problem Open Reading Frames ](https://rosalind.info/problems/orf/)
 
 Rosalind Command Line [CLI.hs](app/CLI.hs)
+
+
+Makes use of libraries such as parsec, servant, freer-simple, optparse-applicative, QuickCheck, Hedgehog, mtl and lens
 
 Run with
 ```
@@ -214,3 +219,11 @@ Test suite Rosalind-test: PASS
 Test suite logged to:
 1 of 1 test suites (1 of 1 test cases) passed.
 ```
+
+
+# Auto generate HIE.yaml
+```
+gen-hie > hie.yaml
+```
+
+

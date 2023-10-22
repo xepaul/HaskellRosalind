@@ -7,26 +7,28 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Rosalind.Problems.Tran 
-  (
-    prob,
-    trans
+module Rosalind.Problems.Tran
+  ( prob,
+    trans,
   )
 where
 
 import Control.Lens
+import Control.Monad.Except (MonadError, runExceptT)
 import Control.Monad.State (MonadState (), execState)
-import GHC.Generics (Generic)
 import Data.Monoid.Generic
   ( GenericMonoid (..),
     GenericSemigroup (..),
   )
 import Data.Semigroup (Sum (..))
 import Data.Text qualified as T
-import Text.Printf ( printf )
+import GHC.Generics (Generic)
 import Rosalind.DnaBase (DnaBase (..))
 import Rosalind.Fasta
-    ( RosalindFasta(RosalindFasta), parseTwoDnaBaseFastas )
+  ( RosalindFasta (RosalindFasta),
+    parseTwoDnaBaseFastas,
+  )
+import Text.Printf (printf)
 
 data Stats = Stats
   { _transitions :: Sum Double,
@@ -41,9 +43,9 @@ makeLenses ''Stats
 -- | Process the Problem Transitions and Transversions
 -- https://rosalind.info/problems/tran/
 prob :: String -> Either String String
-prob s =  do
-         (RosalindFasta _ a,RosalindFasta _ b) <- parseTwoDnaBaseFastas $  T.pack s         
-         return $ printf "%f" $ trans a b
+prob s = do
+  (RosalindFasta _ a, RosalindFasta _ b) <- parseTwoDnaBaseFastas $ T.pack s
+  return $ printf "%f" $ trans a b
 
 trans :: [DnaBase] -> [DnaBase] -> Double
 trans s1 s2 =
@@ -51,8 +53,8 @@ trans s1 s2 =
    in getSum (s ^. transitions) / getSum (s ^. transversions)
   where
     countTransversion :: [DnaBase] -> [DnaBase] -> Stats
-    countTransversion d1 d2 = execState (getStats $ zip d1 d2) mempty
-    getStats :: (MonadState Stats m) => [(DnaBase, DnaBase)] -> m ()
+    countTransversion d1 d2 = execState (runExceptT (getStats $ zip d1 d2)) mempty
+    getStats :: (MonadError String m, MonadState Stats m) => [(DnaBase, DnaBase)] -> m ()
     getStats =
       mapM_ \case
         (A, A) -> noChange
