@@ -174,7 +174,7 @@ pProblemCommand =
     pIinputFileOption = pExampleInputFile <|> pSpecifiedInputFile
       where
       pExampleInputFile :: Parser InputFileOption
-      pExampleInputFile = flag' ExampleInputFile  (long "example" <> short 'e' <> style H.bold <> showDefault <> help "Override input FILE option to use the example input for the problem")
+      pExampleInputFile = flag' ExampleInputFile  (long "example" <> short 'e' <> showDefault <> help "Override input FILE option to use the example input for the problem")
 
       pSpecifiedInputFile :: Parser InputFileOption
       pSpecifiedInputFile =

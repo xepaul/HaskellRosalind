@@ -36,7 +36,8 @@ data Motif a
   | MotifAnyExcept [a]
   | MotifOption [a]
   deriving (Show, Eq, Lift)
-
+-- | Parse a motif string into a list of Motif
+-- >>> parseMotif "N{P}[ST]{P}"
 parseMotif :: (SingleCharForm a) => Proxy a -> String -> Either String [Motif a]
 parseMotif cProxy = mapLeft show <$> parse (motifParser (motifElementParser cProxy)) ""
   where

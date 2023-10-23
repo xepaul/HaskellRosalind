@@ -30,3 +30,7 @@ out.txt
 /client/output
 /client/src/generated
 /client/.purs-repl
+Rosalind.cabal
+test1/
+.idea/
+.DS_Store
